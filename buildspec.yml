@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - export LC_ALL="en_US.utf8"
+      - export TZ="Asia/Seoul"
+  build:
+    commands:
+      - echo Build Starting on `date`
+      - chmod +x ./gradlew
+      - ./gradlew clean build -Pvaadin.productionMode
+  post_build:
+    commands:
+      - echo $(basename ./build/libs/*.jar)
+      - mv ./build/libs/*.jar ./
+artifacts:
+  files:
+    - ./*.jar
+    - ./.ebextensions/**/*
+    - ./.platform/**/*
+cache:
+  paths:
+    - /root/.gradle/caches/**/*
+    - '**/node_modules/**/*'
