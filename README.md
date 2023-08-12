@@ -41,22 +41,7 @@
     - `Domain Driven` 전략을 채택한 Bounded Context에 대해서만 애그리거트 구조를 정의
         - 도메인 영역을 거치지 않고 조회 전용 쿼리로만 구현된 `Home&Search`와 서드파티인 `Auth`는 제외
     ![Untitled](https://complex-aster-37e.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F877ba80c-d284-410d-8c60-944fb4e0fae2%2FUntitled.png?table=block&id=453a39d3-87bf-4991-899f-440f565b1c05&spaceId=0257a9fe-c3da-4351-92b7-a807c92c74a1&width=2000&userId=&cache=v2)
-    
 
-### Domain Event
-`Domain`간의 **의존성을 제거**하고, **트랜잭션을 분리**하여 **비동기**적으로 처리해야할 기능을 `Domain Event`로 구현하였습니다.
-
-- **User** : `회원 탈퇴` 이벤트 **발행**
-    - **Folder**: `회원 탈퇴` 이벤트를 **구독**하여 해당 회원의 Folder Batch 삭제
-    - **Link** : `회원 탈퇴` 이벤트를 **구독**하여 해당 회원의 Link Batch 삭제
-
-#### 💡 Hexagonal Architecture에서 Domain Event의 개념을 `Domain`과 `Infra` 영역으로 분리
-- **Domain**
-    - 이벤트를 정의하고 이에 대한 `publisher`와 `listener`를 등록
-    - `listener` 측에서 이벤트가 발생하면 해야할 행위를 정의
-- **Infra**
-    - 이벤트를 실제로 발행하여 각각의 listener들에게 aysnc non-blocking하게 전달
- 
 ### Infra
 
 기존에 채택한 Spring Framework Servlet Stack에서 `Reactive Stack`으로 전환하여 Reactive Web Application을 구현하였습니다.
@@ -65,5 +50,22 @@
 - Spring Data R2DBC
 - Kotlin Coroutine
 
-# Trouble Shooting
+## Domain Event
+`Domain`간의 **의존성을 제거**하고, **트랜잭션을 분리**하여 **비동기**적으로 처리해야할 기능을 `Domain Event`로 구현하였습니다.
+
+- **User** : `회원 탈퇴` 이벤트 **발행**
+    - **Folder**: `회원 탈퇴` 이벤트를 **구독**하여 해당 회원의 Folder Batch 삭제
+    - **Link** : `회원 탈퇴` 이벤트를 **구독**하여 해당 회원의 Link Batch 삭제
+
+### 💡 Hexagonal Architecture에서 Domain Event의 개념을 `Domain`과 `Infra` 영역으로 분리
+- **Domain**
+    - 이벤트를 정의하고 이에 대한 `publisher`와 `listener`를 등록
+    - `listener` 측에서 이벤트가 발생하면 해야할 행위를 정의
+- **Infra**
+    - 이벤트를 실제로 발행하여 각각의 listener들에게 aysnc non-blocking하게 전달
+ 
+## Trouble Shooting
 > Trouble Shooting
+
+## Front
+https://github.com/Monday-Rocket/ac_project_app
