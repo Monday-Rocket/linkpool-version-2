@@ -14,7 +14,7 @@ interface LinkPort {
     suspend fun saveAll(links: List<Link>): List<Link>
     suspend fun findAllByFolderId(folderId: Long): List<Link>
     suspend fun findAllByUserId(userId: Long): List<Link>
-    suspend fun countByFolderId(folderId: Long): Int
+    suspend fun countByFolderId(folderId: Long): Long
     suspend fun countByUserIdAndFolderIdIsNull(userId: Long): Int
     suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, pageable: LinkPoolPageRequest): LinkPoolPage<Link>
     suspend fun existsByUserIdAndUrl(userId: Long, url: String): Boolean
@@ -22,7 +22,6 @@ interface LinkPort {
     suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Link?
     suspend fun delete(link: Link)
     suspend fun update(link: Link)
-
     suspend fun deleteBatchByUserId(userId: Long)
     suspend fun deleteBatchByFolderId(folderId: Long)
 

@@ -35,19 +35,25 @@ class LinkDataAdapter(
     }
 
     override suspend fun findAllByFolderId(folderId: Long): List<Link> {
-        return toModel(linkRepository.findAllByFolderId(folderId))
+        return toModel(linkRepository.findAllByFolderId(folderId)
+            .collectList()
+            .awaitSingle()
+        )
     }
 
     override suspend fun findAllByUserId(userId: Long): List<Link> {
-        return toModel(linkRepository.findAllByFolderId(userId))
+        return toModel(linkRepository.findAllByFolderId(userId)
+            .collectList()
+            .awaitSingle()
+        )
     }
 
-    override suspend fun countByFolderId(folderId: Long): Int {
-        return linkRepository.countByFolderId(folderId)
+    override suspend fun countByFolderId(folderId: Long): Long {
+        return linkRepository.countByFolderId(folderId).awaitSingle()
     }
 
     override suspend fun countByUserIdAndFolderIdIsNull(userId: Long): Int {
-        return linkRepository.countByUserIdAndFolderIdIsNull(userId)
+        return linkRepository.countByUserIdAndFolderIdIsNull(userId).awaitSingle()
     }
 
     override suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
@@ -56,13 +62,13 @@ class LinkDataAdapter(
         return toModel(
             linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId)
                 .collectList()
-                .zipWith(linkRepository.count())
+                .zipWith(linkRepository.countByFolderId(folderId))
                 .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
         )
     }
 
     override suspend fun existsByUserIdAndUrl(userId: Long, url: String): Boolean {
-        return linkRepository.existsByUserIdAndUrl(userId, url)
+        return linkRepository.existsByUserIdAndUrl(userId, url).awaitSingle()
     }
 
     override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(id: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
@@ -70,12 +76,12 @@ class LinkDataAdapter(
         return toModel(
             linkRepository.findByUserIdOrderByCreatedDateTimeDesc(id)
                 .collectList()
-                .zipWith(linkRepository.count())
+                .zipWith(linkRepository.countByUserId(id))
                 .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
             )
     }
     override suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Link? {
-        return linkRepository.findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId)?.let { toModel(it) }
+        return toModel(linkRepository.findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId).awaitSingle())
     }
 
     override suspend fun delete(link: Link) {
