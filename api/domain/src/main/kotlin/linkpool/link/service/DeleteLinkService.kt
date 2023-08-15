@@ -6,8 +6,10 @@ import linkpool.link.port.`in`.DeleteLinkUseCase
 import linkpool.link.port.out.LinkPort
 import linkpool.link.port.out.getById
 import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class DeleteLinkService(
   private val getUserUseCase: GetUserUseCase,
   private val linkPort: LinkPort,

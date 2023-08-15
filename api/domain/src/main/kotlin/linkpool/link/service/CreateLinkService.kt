@@ -9,8 +9,10 @@ import linkpool.link.port.out.LinkPort
 import linkpool.user.model.User
 import linkpool.user.port.`in`.GetUserUseCase
 import java.time.LocalDateTime
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class CreateLinkService(
   private val getUserUseCase: GetUserUseCase,
   private val linkPort: LinkPort,

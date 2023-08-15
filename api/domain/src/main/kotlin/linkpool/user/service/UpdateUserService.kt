@@ -6,8 +6,10 @@ import linkpool.user.model.User
 import linkpool.user.port.`in`.UpdateUserUseCase
 import linkpool.user.port.`in`.UserInfoRequest
 import linkpool.user.port.out.UserPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class UpdateUserService(
     private val userPort: UserPort,
 ) : UpdateUserUseCase {

@@ -6,8 +6,10 @@ import linkpool.report.model.*
 import linkpool.report.port.`in`.CreateReportUseCase
 import linkpool.report.port.`in`.CreateReportRequest
 import linkpool.report.port.out.ReportPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class CreateReportService(
     private val reportPort: ReportPort,
 ): CreateReportUseCase {

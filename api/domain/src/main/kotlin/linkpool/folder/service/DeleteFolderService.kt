@@ -5,8 +5,10 @@ import linkpool.exception.NotAuthorizedForDataException
 import linkpool.folder.port.`in`.DeleteFolderUseCase
 import linkpool.folder.port.out.FolderPort
 import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class DeleteFolderService(
   private val folderPort: FolderPort,
   private val userUseCase: GetUserUseCase

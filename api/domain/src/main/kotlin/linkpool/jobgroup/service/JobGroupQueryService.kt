@@ -5,8 +5,10 @@ import linkpool.exception.DataNotFoundException
 import linkpool.jobgroup.model.JobGroup
 import linkpool.jobgroup.port.`in`.JobGroupQuery
 import linkpool.jobgroup.port.out.JobGroupPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class JobGroupQueryService(
     private val jobGroupPort: JobGroupPort,
 ): JobGroupQuery {

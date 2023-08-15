@@ -7,8 +7,10 @@ import linkpool.link.port.`in`.GetLinksUseCase
 import linkpool.link.port.`in`.LinkResponse
 import linkpool.link.port.out.LinkPort
 import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class GetLinksService(
     private val getUserUseCase: GetUserUseCase,
     private val linkPort: LinkPort,
