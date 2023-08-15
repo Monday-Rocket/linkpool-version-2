@@ -38,7 +38,7 @@ class LinkUserRepository(
             title = row["url"]?.toString(),
             image = row["image"]?.toString(),
             describe = row["describe"]?.toString(),
-            inflowType = InflowType.valueOf(row["inflowType"].toString()),
+            inflowType = row["inflowType"].toString().toInt(),
             createdDateTime = LocalDateTime.parse(row["createdDateTime"].toString()
             )
         )

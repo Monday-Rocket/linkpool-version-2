@@ -6,6 +6,7 @@ import linkpool.LinkPoolPageRequest
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import linkpool.adapters.link.r2dbc.repository.LinkRepository
 import linkpool.adapters.link.r2dbc.repository.getById
+import linkpool.link.model.InflowType
 import linkpool.link.model.Link
 import linkpool.link.port.out.LinkPort
 import org.springframework.data.domain.Page
@@ -73,6 +74,7 @@ class LinkDataAdapter(
 
     override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(id: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
+
         return toModel(
             linkRepository.findByUserIdOrderByCreatedDateTimeDesc(id)
                 .collectList()
@@ -130,7 +132,11 @@ class LinkDataAdapter(
             title = entity.title,
             image = entity.image,
             describe = entity.describe,
-            inflowType = entity.inflowType,
+            inflowType = when(entity.inflowType){
+                0 -> InflowType.CREATE
+                1 -> InflowType.BRING
+                else -> InflowType.CREATE
+            },
             createdDateTime = entity.createdDateTime,
             modifiedDateTime = entity.modifiedDateTime
         )
@@ -144,7 +150,7 @@ class LinkDataAdapter(
             title = model.title,
             image = model.image,
             describe = model.describe,
-            inflowType = model.inflowType,
+            inflowType = model.inflowType.ordinal,
             createdDateTime = model.createdDateTime
         )
 

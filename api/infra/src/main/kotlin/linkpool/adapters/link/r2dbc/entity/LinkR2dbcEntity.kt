@@ -33,7 +33,7 @@ class LinkR2dbcEntity(
     var describe: String? = null,
 
     @Column
-    var inflowType: InflowType,
+    var inflowType: Int,
 
     @CreatedDate
     @Column

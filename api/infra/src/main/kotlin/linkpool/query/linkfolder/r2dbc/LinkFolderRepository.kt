@@ -40,7 +40,7 @@ class LinkFolderRepository(
             ORDER BY l.created_date_time DESC
     """
     ).bind("userIds", userIds)
-          .bind("inflowType", "CREATE")
+          .bind("inflowType", 0)
           .bind("targetType", "LINK")
           .bind("loggedInUserId", loggedInUserId)
           .fetch().all()
@@ -60,7 +60,7 @@ class LinkFolderRepository(
           title = row["url"]?.toString(),
           image = row["image"]?.toString(),
           describe = row["describe"]?.toString(),
-          inflowType = InflowType.valueOf(row["inflowType"].toString()),
+          inflowType = row["inflowType"].toString().toInt(),
           createdDateTime = LocalDateTime.parse(row["createdDateTime"].toString()
           )
       )

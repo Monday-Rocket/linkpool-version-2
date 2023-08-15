@@ -67,10 +67,10 @@ class LinkHandler(
                 .awaitSingle()
 
         val uid = context.authentication.name
-        val pageNo = request.pathVariable("pageNo").toInt()
-        val pageSize = request.pathVariable("pageSize").toInt()
-        getLinksUseCase.getByUserId(uid, LinkPoolPageRequest(pageNo, pageSize))
-        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(true))
+        val pageNo = request.queryParam("pageNo").get().toInt()
+        val pageSize = request.queryParam("pageSize").get().toInt()
+
+        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(getLinksUseCase.getByUserId(uid, LinkPoolPageRequest(pageNo, pageSize))))
     }
 
     suspend fun getLinksOfFolder(request: ServerRequest): ServerResponse{
@@ -78,12 +78,11 @@ class LinkHandler(
                 .getContext()
                 .awaitSingle()
         val uid = context.authentication.name
-        val pageNo = request.pathVariable("pageNo").toInt()
-        val pageSize = request.pathVariable("pageSize").toInt()
+        val pageNo = request.queryParam("pageNo").get().toInt()
+        val pageSize = request.queryParam("pageSize").get().toInt()
 
-        linkUserQuery.getUnclassifiedLinks(uid, LinkPoolPageRequest(pageNo, pageSize))
 
-        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(true))
+        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(linkUserQuery.getUnclassifiedLinks(uid, LinkPoolPageRequest(pageNo, pageSize))))
     }
 
     suspend fun searchLinkByKeyword(request: ServerRequest): ServerResponse {
@@ -95,9 +94,7 @@ class LinkHandler(
         val pageNo = request.pathVariable("pageNo").toInt()
         val pageSize = request.pathVariable("pageSize").toInt()
 
-        searchLinkQuery.searchByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))
-
-        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(true))
+        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(searchLinkQuery.searchByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))))
     }
 
     suspend fun searchMyLinkByKeyword(request: ServerRequest): ServerResponse {
@@ -111,6 +108,6 @@ class LinkHandler(
 
         searchLinkQuery.searchMyLinkByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))
 
-        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(true))
+        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(searchLinkQuery.searchMyLinkByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))))
     }
 }
