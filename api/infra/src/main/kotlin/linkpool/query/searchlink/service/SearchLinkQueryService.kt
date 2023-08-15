@@ -10,9 +10,11 @@ import linkpool.query.searchlink.r2dbc.SearchLinkRepository
 import linkpool.user.port.`in`.GetUserUseCase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
 
 @DomainComponent
+@Transactional(readOnly = true)
 class SearchLinkQueryService(
     private val searchLinkRepository: SearchLinkRepository,
     private val getUserUseCase: GetUserUseCase

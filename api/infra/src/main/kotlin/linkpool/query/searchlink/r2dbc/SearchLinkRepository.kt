@@ -8,10 +8,12 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
 @Repository
+@Transactional(readOnly = true)
 class SearchLinkRepository(
     private val databaseClient: DatabaseClient
 ) {

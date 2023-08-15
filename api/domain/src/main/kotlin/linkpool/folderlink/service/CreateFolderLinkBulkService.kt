@@ -8,8 +8,10 @@ import linkpool.folderlink.port.`in`.CreateFolderLinkBulkUseCase
 import linkpool.link.port.`in`.CreateLinkUseCase
 import linkpool.link.port.`in`.SaveLinkRequest
 import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class CreateFolderLinkBulkService(
     private val getUserUseCase: GetUserUseCase,
     private val createFolderUseCase: CreateFolderUseCase,
