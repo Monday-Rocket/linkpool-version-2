@@ -50,3 +50,7 @@ dependencies {
   // json
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
+
+allOpen{
+  annotation("org.springframework.transaction.annotation.Transactional")
+}
