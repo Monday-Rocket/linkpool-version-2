@@ -90,9 +90,9 @@ class LinkHandler(
             .getContext()
             .awaitSingle()
         val uid = context.authentication.name
-        val keyword = request.pathVariable("keyword")
-        val pageNo = request.pathVariable("pageNo").toInt()
-        val pageSize = request.pathVariable("pageSize").toInt()
+        val keyword = request.queryParam("keyword").get()
+        val pageNo = request.queryParam("pageNo").get().toInt()
+        val pageSize = request.queryParam("pageSize").get().toInt()
 
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(searchLinkQuery.searchByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))))
     }
@@ -102,11 +102,9 @@ class LinkHandler(
             .getContext()
             .awaitSingle()
         val uid = context.authentication.name
-        val keyword = request.pathVariable("keyword")
-        val pageNo = request.pathVariable("pageNo").toInt()
-        val pageSize = request.pathVariable("pageSize").toInt()
-
-        searchLinkQuery.searchMyLinkByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))
+        val keyword = request.queryParam("keyword").get()
+        val pageNo = request.queryParam("pageNo").get().toInt()
+        val pageSize = request.queryParam("pageSize").get().toInt()
 
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(searchLinkQuery.searchMyLinkByKeyword(uid, keyword, LinkPoolPageRequest(pageNo, pageSize))))
     }

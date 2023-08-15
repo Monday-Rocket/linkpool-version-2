@@ -37,7 +37,7 @@ class RouterConfig(
                     GET("", linkHandler::getByUserId)
                     GET("/unclassified", linkHandler::getLinksOfFolder)
                     GET("/search", linkHandler::searchLinkByKeyword)
-                    GET("/my_link/search/", linkHandler::searchMyLinkByKeyword)
+                    GET("/my_link/search", linkHandler::searchMyLinkByKeyword)
                 }
                 GET ("", defaultHandler::getDefault)
             }

@@ -21,7 +21,7 @@ class SearchLinkQueryService(
         val userId = getUserUseCase.getByUid(uid)
         val processedKeyword = preprocessKeyword(keyword)
 
-        return searchLinkRepository.findPageByTitleContains(userId.id, processedKeyword, PageRequest.of(paging.page_no, paging.page_size)).let{
+        return searchLinkRepository.findPageByTitleContains(userId.id, processedKeyword, paging.page_no, paging.page_size).let{
             toModel(it).awaitSingle()
         }
     }
@@ -30,7 +30,7 @@ class SearchLinkQueryService(
         val userId = getUserUseCase.getByUid(uid)
         val processedKeyword = preprocessKeyword(keyword)
 
-        return searchLinkRepository.findPageByUserIdAndTitleContains(userId.id, processedKeyword, PageRequest.of(paging.page_no, paging.page_size)).let{
+        return searchLinkRepository.findPageByUserIdAndTitleContains(userId.id, processedKeyword, paging.page_no, paging.page_size).let{
             toModel(it).awaitSingle()
         }
 
