@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 
 
 @Service
@@ -87,8 +86,7 @@ class LinkDataAdapter(
     }
 
     override suspend fun deleteBatchByUserId(userId: Long) {
-//        return linkRepository.deleteBatchByUserId(userId)
-        TODO()
+        return linkRepository.deleteBatchByUserId(userId)
     }
 
     override suspend fun deleteBatchByFolderId(folderId: Long) {

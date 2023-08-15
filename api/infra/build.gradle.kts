@@ -49,4 +49,7 @@ dependencies {
 
   // json
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+  // integration
+  implementation("org.springframework.integration:spring-integration-event:6.1.2")
 }

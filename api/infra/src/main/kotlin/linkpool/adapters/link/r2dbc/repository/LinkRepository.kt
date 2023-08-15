@@ -1,8 +1,7 @@
 package linkpool.adapters.link.r2dbc.repository
 
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
@@ -23,12 +22,11 @@ interface LinkRepository : ReactiveCrudRepository<LinkR2dbcEntity, Long> {
     suspend fun findByUserIdOrderByCreatedDateTimeDesc(id: Long): Flux<LinkR2dbcEntity>
     suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): LinkR2dbcEntity?
 
-//    @Modifying
-//    @Query("UPDATE LinkJpaEntity l SET l.deleted = true WHERE l.userId = :userId")
-//    suspend fun deleteBatchByUserId(@Param("userId") userId: Long)
+    @Modifying
+    @Query("UPDATE link l SET l.deleted = true WHERE l.user_id = :userId")
+    suspend fun deleteBatchByUserId(@Param("userId") userId: Long)
 
-    @Query("UPDATE LinkJpaEntity l SET l.deleted = true WHERE l.folderId = :folderId")
+    @Modifying
+    @Query("UPDATE link l SET l.deleted = true WHERE l.folder_id = :folderId")
     suspend fun deleteBatchByFolderId(@Param("folderId") folderId: Long)
-
-
 }
