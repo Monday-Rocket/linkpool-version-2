@@ -59,9 +59,8 @@ class LinkDataAdapter(
 
     override suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
-
         return toModel(
-            linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId)
+            linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
                 .collectList()
                 .zipWith(linkRepository.countByFolderId(folderId))
                 .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
@@ -74,9 +73,8 @@ class LinkDataAdapter(
 
     override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(id: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
-
         return toModel(
-            linkRepository.findByUserIdOrderByCreatedDateTimeDesc(id)
+            linkRepository.findByUserIdOrderByCreatedDateTimeDesc(id, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
                 .collectList()
                 .zipWith(linkRepository.countByUserId(id))
                 .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()

@@ -1,5 +1,6 @@
 package linkpool.adapters.link.r2dbc.repository
 
+import linkpool.LinkPoolPageRequest
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -16,11 +17,11 @@ interface LinkRepository : ReactiveCrudRepository<LinkR2dbcEntity, Long> {
     suspend fun findAllByFolderId(folderId: Long): Flux<LinkR2dbcEntity>
     suspend fun countByFolderId(folderId: Long): Mono<Long>
     suspend fun countByUserIdAndFolderIdIsNull(userId: Long): Mono<Int>
-    @Query("SELECT * FROM link WHERE folder_id = :folderId ORDER BY created_date_time DESC")
-    suspend fun findByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Flux<LinkR2dbcEntity>
+    @Query("SELECT * FROM link WHERE folder_id =:folderId ORDER BY created_date_time DESC LIMIT :limit OFFSET :offset")
+    suspend fun findByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, limit: Int, offset: Int): Flux<LinkR2dbcEntity>
+    @Query("SELECT * FROM link WHERE user_id = :userId ORDER BY created_date_time DESC LIMIT :limit OFFSET :offset")
+    suspend fun findByUserIdOrderByCreatedDateTimeDesc(userId: Long, limit: Int, offset: Int): Flux<LinkR2dbcEntity>
     suspend fun existsByUserIdAndUrl(userId: Long, url: String): Mono<Boolean>
-    @Query("SELECT * FROM link WHERE user_id = :userId ORDER BY created_date_time DESC")
-    suspend fun findByUserIdOrderByCreatedDateTimeDesc(userId: Long): Flux<LinkR2dbcEntity>
 
     suspend fun countByUserId(userId: Long): Mono<Long>
 
