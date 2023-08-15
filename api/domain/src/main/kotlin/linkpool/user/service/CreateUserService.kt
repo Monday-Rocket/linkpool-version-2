@@ -5,8 +5,10 @@ import linkpool.user.model.User
 import linkpool.user.port.`in`.CreateUserResponse
 import linkpool.user.port.`in`.CreateUserUseCase
 import linkpool.user.port.out.UserPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class CreateUserService(
     private val userPort: UserPort,
 ): CreateUserUseCase {

@@ -6,8 +6,10 @@ import linkpool.exception.NotSignedUpException
 import linkpool.user.model.User
 import linkpool.user.port.`in`.GetUserUseCase
 import linkpool.user.port.out.UserPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class GetUserService(
     private val userPort: UserPort
 ): GetUserUseCase {

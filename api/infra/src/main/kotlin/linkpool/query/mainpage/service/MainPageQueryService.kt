@@ -10,9 +10,11 @@ import linkpool.query.mainpage.r2dbc.MainPageRepository
 import linkpool.user.port.`in`.GetUserUseCase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
 
 @DomainComponent
+@Transactional(readOnly = true)
 class MainPageQueryService(
     private val mainPageRepository: MainPageRepository,
     private val getUserUseCase: GetUserUseCase

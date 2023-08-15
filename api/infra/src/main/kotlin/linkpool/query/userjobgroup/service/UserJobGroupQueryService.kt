@@ -5,8 +5,10 @@ import linkpool.exception.DataNotFoundException
 import linkpool.query.userjobgroup.r2dbc.UserWithJobGroupResult
 import linkpool.query.userjobgroup.UserJobGroupQuery
 import linkpool.query.userjobgroup.r2dbc.UserJobGroupRepository
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
+@Transactional(readOnly = true)
 class UserJobGroupQueryService(
     private val userJobGroupRepository: UserJobGroupRepository
 ): UserJobGroupQuery {

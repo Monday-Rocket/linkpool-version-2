@@ -4,8 +4,10 @@ import linkpool.common.DomainComponent
 import linkpool.folder.port.`in`.WithdrawalFolderUseCase
 import linkpool.folder.port.out.FolderPort
 import linkpool.user.model.UserSignedOutEvent
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class WithdrawalFolderService(
   private val folderPort: FolderPort,
 ) : WithdrawalFolderUseCase {

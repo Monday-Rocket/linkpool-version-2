@@ -6,8 +6,10 @@ import linkpool.folder.port.`in`.UpdateFolderRequest
 import linkpool.folder.port.`in`.UpdateFolderUseCase
 import linkpool.folder.port.out.FolderPort
 import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class UpdateFolderService(
     private val getUserUseCase: GetUserUseCase,
     private val folderPort: FolderPort,

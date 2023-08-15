@@ -7,8 +7,10 @@ import linkpool.folder.port.out.FolderPort
 import linkpool.folderlink.port.`in`.DeleteFolderLinkUseCase
 import linkpool.folderlink.port.`in`.LinkBatchEventPort
 import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class DeleteFolderLinkService(
     private val folderPort: FolderPort,
     private val getUserUseCase: GetUserUseCase,

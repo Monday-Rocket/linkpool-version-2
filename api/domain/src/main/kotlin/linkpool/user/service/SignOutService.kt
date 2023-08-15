@@ -4,8 +4,10 @@ import linkpool.common.DomainComponent
 import linkpool.user.model.User
 import linkpool.user.port.`in`.SignOutUseCase
 import linkpool.user.port.out.UserPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class SignOutService(
     private val userPort: UserPort,
 ): SignOutUseCase {

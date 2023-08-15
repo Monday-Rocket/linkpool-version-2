@@ -9,8 +9,10 @@ import linkpool.folder.port.out.FolderPort
 import linkpool.user.model.User
 import linkpool.user.port.`in`.GetUserUseCase
 import java.time.LocalDateTime
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class CreateFolderService(
   private val getUserUseCase: GetUserUseCase,
   private val folderPort: FolderPort,
