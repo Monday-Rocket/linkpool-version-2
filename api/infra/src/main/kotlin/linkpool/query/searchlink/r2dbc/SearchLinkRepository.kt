@@ -1,12 +1,12 @@
 package linkpool.query.searchlink.r2dbc
 
+import linkpool.LinkPoolPageRequest
 import linkpool.jobgroup.port.`in`.JobGroupResponse
 import linkpool.link.port.`in`.LinkWithUserResponse
 import linkpool.user.port.`in`.UserResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter
 class SearchLinkRepository(
     private val databaseClient: DatabaseClient
 ) {
-    suspend fun findPageByUserIdAndTitleContains(userId: Long, title: String, pageNo: Int, pageSize: Int): Mono<Page<LinkWithUserResponse>> {
+    suspend fun findPageByUserIdAndTitleContains(userId: Long, title: String, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>> {
         return databaseClient.sql(
             """
                SELECT 
@@ -52,16 +52,16 @@ class SearchLinkRepository(
             """
         ).bind("userId", userId)
             .bind("title", title)
-            .bind("limit", pageSize)
-            .bind("offset", pageNo * pageSize)
+            .bind("limit", paging.page_size)
+            .bind("offset", paging.page_size * paging.page_no)
             .fetch().all()
             .map { row -> convert(row) }
             .collectList()
-            .map { list -> PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong()) }
+            .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong()) }
     }
 
 
-    suspend fun findPageByTitleContains(loggedInUserId: Long, keyword: String, pageNo: Int, pageSize: Int): Mono<Page<LinkWithUserResponse>> {
+    suspend fun findPageByTitleContains(loggedInUserId: Long, keyword: String, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>> {
         return databaseClient.sql(
             """
                 SELECT 
@@ -113,12 +113,12 @@ class SearchLinkRepository(
             .bind("inflowType", 0)
             .bind("targetType", 1)
             .bind("loggedInUserId", loggedInUserId)
-            .bind("limit", pageSize)
-            .bind("offset", pageNo * pageSize)
+            .bind("limit", paging.page_size)
+            .bind("offset", paging.page_size * paging.page_no)
             .fetch().all()
             .map { row -> convert(row) }
             .collectList()
-            .map { list -> PageImpl(list, PageRequest.of(pageNo, pageSize), list.size.toLong()) }
+            .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong()) }
     }
     private fun convert(row: MutableMap<String, Any>): LinkWithUserResponse {
         return LinkWithUserResponse(

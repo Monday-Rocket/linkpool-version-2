@@ -10,7 +10,6 @@ import linkpool.query.linkuser.r2dbc.LinkResponse
 import linkpool.query.linkuser.r2dbc.LinkUserRepository
 import linkpool.user.port.`in`.GetUserUseCase
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import reactor.core.publisher.Mono
 
 @DomainComponent
@@ -20,7 +19,7 @@ class LinkUserQueryService(
 ): LinkUserQuery {
     override suspend fun getUnclassifiedLinks(uid: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkResponse> {
         val user = getUserUseCase.getByUid(uid)
-        return toModel(linkUserRepository.findUnclassifiedLinks(user.id, PageRequest.of(paging.page_no, paging.page_size))).awaitSingle()
+        return toModel(linkUserRepository.findUnclassifiedLinks(user.id, paging)).awaitSingle()
     }
 
     private fun toModel(pages: Mono<Page<LinkR2dbcEntity>>): Mono<LinkPoolPage<LinkResponse>> =
