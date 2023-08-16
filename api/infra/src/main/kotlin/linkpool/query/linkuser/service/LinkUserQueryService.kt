@@ -5,8 +5,8 @@ import linkpool.LinkPoolPage
 import linkpool.LinkPoolPageRequest
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import linkpool.common.DomainComponent
-import linkpool.link.port.`in`.LinkResponse
 import linkpool.query.linkuser.LinkUserQuery
+import linkpool.query.linkuser.r2dbc.LinkResponse
 import linkpool.query.linkuser.r2dbc.LinkUserRepository
 import linkpool.user.port.`in`.GetUserUseCase
 import org.springframework.data.domain.Page

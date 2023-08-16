@@ -9,6 +9,7 @@ import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Repository
 class LinkUserRepository(
@@ -35,12 +36,11 @@ class LinkUserRepository(
             userId = row["userId"].toString().toLong(),
             folderId = row["folderId"]?.toString()?.toLong(),
             url = row["url"].toString(),
-            title = row["url"]?.toString(),
+            title = row["title"]?.toString(),
             image = row["image"]?.toString(),
             describe = row["describe"]?.toString(),
             inflowType = row["inflowType"].toString().toInt(),
-            createdDateTime = LocalDateTime.parse(row["createdDateTime"].toString()
-            )
+            createdDateTime = LocalDateTime.parse(row["linkCreatedDateTime"].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z[UTC]'"))
         )
     }
 }

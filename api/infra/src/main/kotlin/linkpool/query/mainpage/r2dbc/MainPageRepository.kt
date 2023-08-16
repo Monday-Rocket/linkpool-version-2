@@ -1,11 +1,13 @@
 package linkpool.query.mainpage.r2dbc
 
+import linkpool.LinkPoolPageRequest
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import linkpool.jobgroup.port.`in`.JobGroupResponse
 import linkpool.link.port.`in`.LinkWithUserResponse
 import linkpool.user.port.`in`.UserResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.query.Param
@@ -13,12 +15,13 @@ import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Repository
 class MainPageRepository(
     private val databaseClient: DatabaseClient,
 ) {
-    suspend fun findAll(loggedInUserId: Long, pageable: Pageable): Mono<Page<LinkWithUserResponse>> {
+    suspend fun findAll(loggedInUserId: Long, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>> {
         return databaseClient.sql(
             """
                 SELECT 
@@ -32,12 +35,12 @@ class MainPageRepository(
                     u.id                    as userId,
                     u.nickname              as nickname,
                     u.profile_image         as profileImage,
-                    jg.id                   as jobGrouopId,
+                    jg.id                   as jobGroupId,
                     jg.name                 as jobGroupName
                 FROM 
                     link l
                 JOIN 
-                    folder f ON l.folderId = f.id
+                    folder f ON l.folder_id = f.id
                 AND 
                     f.visible = :visible
                 AND 
@@ -59,18 +62,22 @@ class MainPageRepository(
                 JOIN 
                     job_group jg ON u.job_group_id = jg.id
                 ORDER BY l.created_date_time DESC
+                LIMIT :limit
+                OFFSET :offset
     """
     ).bind("visible", 1)
-          .bind("inflowType", "CREATE")
-          .bind("targetType", "LINK")
-          .bind("loggedInUserId", loggedInUserId)
+            .bind("inflowType", 0)
+            .bind("targetType", 1)
+            .bind("loggedInUserId", loggedInUserId)
+            .bind("limit", paging.page_size)
+            .bind("offset", paging.page_size * paging.page_no)
           .fetch().all()
           .map { row -> convert(row) }
           .collectList()
-          .map { list -> PageImpl(list, pageable, list.size.toLong()) }
+          .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong())}
   }
 
-    suspend fun findByUserId(jobGroupId: Long, loggedInUserId: Long, pageable: Pageable): Mono<Page<LinkWithUserResponse>>{
+    suspend fun findByUserId(jobGroupId: Long, loggedInUserId: Long, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>>{
         return databaseClient.sql(
             """
             SELECT l.id                as linkId,
@@ -83,7 +90,7 @@ class MainPageRepository(
                    u.id                as userId,
                    u.nickname          as nickname,
                    u.profile_image     as profileImage,
-                   jg.id               as jobGrouopId,
+                   jg.id               as jobGroupId,
                    jg.name             as jobGroupName
             FROM link l
                      INNER JOIN
@@ -96,38 +103,40 @@ class MainPageRepository(
                  report ru ON (l.user_id = ru.target_id OR ru.target_id = l.id)
             WHERE
               ru.id IS NULL
-              AND ru.reporter_id = :loggedInUserId
               AND u.job_group_id = :jobGroupId
               AND f.visible = :visible
               AND l.inflow_type = :inflowType
             ORDER BY l.created_date_time DESC
-    """).bind("loggedInUserId", loggedInUserId)
-            .bind("jobGroupId", jobGroupId)
+            LIMIT :limit
+            OFFSET :offset
+    """).bind("jobGroupId", jobGroupId)
             .bind("visible", 1)
-            .bind("inflowType", "CREATE")
+            .bind("inflowType", 0)
+            .bind("limit", paging.page_size)
+            .bind("offset", paging.page_size * paging.page_no)
             .fetch().all()
             .map { row -> convert(row) }
             .collectList()
-            .map { list -> PageImpl(list, pageable, list.size.toLong()) }
+            .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong()) }
     }
     private fun convert(row: MutableMap<String, Any>): LinkWithUserResponse {
-      return LinkWithUserResponse(
-          id = row["linkId"].toString().toLong(),
-          user = UserResponse(
-              row["userId"].toString().toLong(),
-              row["nickname"].toString(),
-              JobGroupResponse(
-                  row["jobGrouopId"].toString().toLong(),
-                  row["jobGroupName"].toString(),
-                  ),
-              row["profileImage"].toString()
-          ),
-          url = row["url"].toString(),
-          title = row["itle"].toString(),
-          image = row["image"].toString(),
-          folderId = row["folderId"].toString().toLong(),
-          describe = row["linkDescribe"].toString(),
-          createdDateTime = LocalDateTime.parse(row["createdDateTime"].toString())
-      )
-  }
+        return LinkWithUserResponse(
+            id = row["linkId"].toString().toLong(),
+            user = UserResponse(
+                row["userId"].toString().toLong(),
+                row["nickname"]?.toString(),
+                JobGroupResponse(
+                    row["jobGroupId"].toString().toLong(),
+                    row["jobGroupName"].toString(),
+                ),
+                row["profileImage"].toString()
+            ),
+            url = row["url"].toString(),
+            title = row["title"]?.toString(),
+            image = row["image"]?.toString(),
+            folderId = row["folderId"]?.toString()?.toLong(),
+            describe = row["linkDescribe"]?.toString(),
+            createdDateTime = LocalDateTime.parse(row["linkCreatedDateTime"].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z[UTC]'"))
+        )
+    }
 }
