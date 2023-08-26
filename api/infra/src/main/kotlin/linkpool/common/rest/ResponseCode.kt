@@ -1,7 +1,7 @@
 package linkpool.common.rest
 
 import linkpool.exception.*
-import linkpool.security.UnauthorizationException
+import linkpool.security.UnauthorizedException
 import org.springframework.http.HttpStatus
 import kotlin.reflect.KClass
 
@@ -15,7 +15,7 @@ enum class ResponseCode(
     SUCCESS(0, "", HttpStatus.OK, null),
     NO_RESOURCE(1, "", HttpStatus.NOT_FOUND, DataNotFoundException::class),
 
-    NOT_AUTHORIZED(1000, "회원 인증에 실패했습니다.", HttpStatus.UNAUTHORIZED, UnauthorizationException::class),
+    NOT_AUTHORIZED(1000, "회원 인증에 실패했습니다.", HttpStatus.UNAUTHORIZED, UnauthorizedException::class),
     NOT_SIGNED_UP(1001, "회원가입을 완료하지 않은 회원입니다.", HttpStatus.FORBIDDEN, NotSignedUpException::class),
     NOT_AUTHORIZED_FOR_THE_DATA(1002, "해당 정보에 접근권한이 없습니다.", HttpStatus.UNAUTHORIZED, NotAuthorizedForDataException::class),
     NOT_ENOUGH_FOR_SIGNING_UP(1003, "회원가입에 필요한 정보를 모두 입력하지 않았습니다.", HttpStatus.BAD_REQUEST, NotEnoughForSigningUpException::class),
