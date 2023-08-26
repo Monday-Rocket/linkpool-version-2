@@ -16,11 +16,9 @@ import reactor.core.publisher.Mono
 @DomainComponent
 class LinkUserQueryService(
     private val linkUserRepository: LinkUserRepository,
-    private val getUserUseCase: GetUserUseCase
 ): LinkUserQuery {
-    override suspend fun getUnclassifiedLinks(uid: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkResponse> {
-        val user = getUserUseCase.getByUid(uid)
-        return toModel(linkUserRepository.findUnclassifiedLinks(user.id, PageRequest.of(paging.page_no, paging.page_size))).awaitSingle()
+    override suspend fun getUnclassifiedLinks(userId: Long, paging: LinkPoolPageRequest): LinkPoolPage<LinkResponse> {
+        return toModel(linkUserRepository.findUnclassifiedLinks(userId, PageRequest.of(paging.page_no, paging.page_size))).awaitSingle()
     }
 
     private fun toModel(pages: Mono<Page<LinkR2dbcEntity>>): Mono<LinkPoolPage<LinkResponse>> =

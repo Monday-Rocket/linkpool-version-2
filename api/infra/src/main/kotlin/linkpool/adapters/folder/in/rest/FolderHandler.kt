@@ -1,10 +1,9 @@
 package linkpool.adapters.folder.`in`.rest
 
-import kotlinx.coroutines.reactor.awaitSingle
 import linkpool.common.rest.ApiResponse
 import linkpool.folder.port.`in`.*
 import linkpool.query.userfolder.UserFolderQuery
-import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import linkpool.security.getPrincipal
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -20,46 +19,34 @@ class FolderHandler(
 ) {
 
   suspend fun create(request: ServerRequest): ServerResponse {
-    val context = ReactiveSecurityContextHolder
-      .getContext()
-      .awaitSingle()
-    val uid = context.authentication.name
-
+    val principal = getPrincipal()
     val saveFolderRequest = request.awaitBody<SaveFolderRequest>()
-    createFolderUseCase.create(uid, saveFolderRequest)
+
+    createFolderUseCase.create(principal.id, saveFolderRequest)
     return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(null))
   }
 
   suspend fun update(request: ServerRequest): ServerResponse {
-    val context = ReactiveSecurityContextHolder
-      .getContext()
-      .awaitSingle()
-    val uid = context.authentication.name
-
+    val principal = getPrincipal()
     val folderId = request.pathVariable("folderId").toLong()
     val updateFolderRequest = request.awaitBody<UpdateFolderRequest>()
-    updateFolderUserUseCase.update(uid, folderId, updateFolderRequest)
+
+    updateFolderUserUseCase.update(principal.id, folderId, updateFolderRequest)
     return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(null))
   }
 
   suspend fun delete(request: ServerRequest): ServerResponse {
-    val context = ReactiveSecurityContextHolder
-      .getContext()
-      .awaitSingle()
-    val uid = context.authentication.name
-
+    val principal = getPrincipal()
     val folderId = request.pathVariable("folderId").toLong()
-    deleteFolderUseCase.delete(uid, folderId)
+
+    deleteFolderUseCase.delete(principal.id, folderId)
     return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(null))
   }
 
-  suspend fun getByUserId(): ServerResponse {
-    val context = ReactiveSecurityContextHolder
-      .getContext()
-      .awaitSingle()
-    val uid = context.authentication.name
+  suspend fun getByUserId(request: ServerRequest): ServerResponse {
+    val principal = getPrincipal()
 
-    userFolderQuery.findFoldersByUid(uid)
-    return ServerResponse.ok().bodyValueAndAwait(userFolderQuery.findFoldersByUid(uid))
+    userFolderQuery.findFoldersByUserId(principal.id)
+    return ServerResponse.ok().bodyValueAndAwait(userFolderQuery.findFoldersByUserId(principal.id))
   }
 }

@@ -1,5 +1,6 @@
 package linkpool.configuration
 
+import linkpool.adapters.folder.`in`.rest.FolderHandler
 import linkpool.adapters.link.`in`.rest.LinkHandler
 import linkpool.adapters.user.`in`.rest.UserHandler
 import linkpool.common.rest.DefaultHandler
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.server.coRouter
 class RouterConfig(
     private val userHandler: UserHandler,
     private val linkHandler: LinkHandler,
+    private val folderHandler: FolderHandler,
     private val defaultHandler: DefaultHandler
 ) {
 
@@ -38,6 +40,13 @@ class RouterConfig(
                     GET("/unclassified", linkHandler::getLinksOfFolder)
                     GET("/search", linkHandler::searchLinkByKeyword)
                     GET("/my_link/search/", linkHandler::searchMyLinkByKeyword)
+                }
+                "/folders".nest {
+                    POST("", folderHandler::create)
+                    PATCH("/{folderId}", folderHandler::update)
+                    DELETE("/{folderId}", folderHandler::delete)
+                    GET("", folderHandler::getByUserId)
+                    GET("/{folderId}/links", linkHandler::getLinksOfFolder)
                 }
                 GET ("", defaultHandler::getDefault)
             }

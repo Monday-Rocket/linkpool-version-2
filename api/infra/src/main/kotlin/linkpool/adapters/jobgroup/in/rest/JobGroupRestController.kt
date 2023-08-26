@@ -8,6 +8,7 @@ import linkpool.jobgroup.port.`in`.JobGroupQuery
 import linkpool.jobgroup.port.`in`.JobGroupResponse
 import linkpool.link.port.`in`.LinkWithUserResponse
 import linkpool.query.mainpage.MainPageQuery
+import linkpool.security.getPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.*
@@ -31,13 +32,10 @@ class JobGroupRestController(
         @RequestParam(value = "page_no", required = false) pageNo: Int = 0,
         @RequestParam(value = "page_size", required = false) pageSize: Int = 10,
     ): ResponseEntity<ApiResponse<LinkPoolPage<LinkWithUserResponse>>> {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
+        val principal = getPrincipal()
 
         return ResponseEntity.ok(
-            ApiResponse.success(mainPageQuery.getByUserId(jobGroupId, LinkPoolPageRequest(pageNo, pageSize), uid))
+            ApiResponse.success(mainPageQuery.getByUserId(jobGroupId, LinkPoolPageRequest(pageNo, pageSize), principal.id))
         )
     }
     @GetMapping("/links")
@@ -45,13 +43,10 @@ class JobGroupRestController(
         @RequestParam(value = "page_no", required = false) pageNo: Int = 0,
         @RequestParam(value = "page_size", required = false) pageSize: Int = 10,
     ): ResponseEntity<ApiResponse<LinkPoolPage<LinkWithUserResponse>>> {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
+        val principal = getPrincipal()
 
         return ResponseEntity.ok(
-            ApiResponse.success(mainPageQuery.getAll(LinkPoolPageRequest(pageNo, pageSize), uid))
+            ApiResponse.success(mainPageQuery.getAll(LinkPoolPageRequest(pageNo, pageSize), principal.id))
         )
     }
 

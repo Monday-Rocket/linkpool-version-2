@@ -1,11 +1,10 @@
 package linkpool.adapters.folderlink.`in`.rest
 
-import kotlinx.coroutines.reactor.awaitSingle
 import linkpool.common.rest.ApiResponse
 import linkpool.folderlink.port.`in`.BulkCreateRequest
 import linkpool.folderlink.port.`in`.CreateFolderLinkBulkUseCase
+import linkpool.security.getPrincipal
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,12 +19,9 @@ class BulkRestController(
     suspend fun create(
         @RequestBody request: BulkCreateRequest,
     ): ResponseEntity<ApiResponse<Unit>> {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
+        val principal = getPrincipal()
 
-        createFolderLinkBulkUseCase.createBulk(uid, request)
+        createFolderLinkBulkUseCase.createBulk(principal.id, request)
         return ResponseEntity.ok(ApiResponse.success())
     }
 }

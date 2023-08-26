@@ -12,14 +12,8 @@ import org.springframework.transaction.annotation.Transactional
 class UserJobGroupQueryService(
     private val userJobGroupRepository: UserJobGroupRepository
 ): UserJobGroupQuery {
-    override suspend fun getInformationByUid(uid: String): UserWithJobGroupResult {
-        return userJobGroupRepository.findInformationByUid(uid) ?: throw DataNotFoundException("회원이 존재하지 않습니다. uid: $uid")
-    }
     override suspend fun getInformationById(userId: Long): UserWithJobGroupResult {
         return userJobGroupRepository.findInformationById(userId) ?: throw DataNotFoundException("회원이 존재하지 않습니다. id: $userId")
-    }
-    override suspend fun getInformationByUidOrNull(uid: String): UserWithJobGroupResult? {
-        return userJobGroupRepository.findInformationByUid(uid)
     }
     override suspend fun getInformationByIdOrNull(userId: Long): UserWithJobGroupResult? {
         return userJobGroupRepository.findInformationById(userId)

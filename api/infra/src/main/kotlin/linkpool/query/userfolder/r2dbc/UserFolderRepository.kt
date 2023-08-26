@@ -27,28 +27,6 @@ class UserFolderRepository(
       .awaitSingle()
   }
 
-  suspend fun findFoldersByUserUid(uid: String): List<UserFolderListResult> {
-    return databaseClient.sql(
-      """
-        SELECT f.*, count(l.folder_id) as link_count
-        FROM folder AS f
-        INNER JOIN link AS l ON f.id = l.folder_id
-        WHERE f.visible IS true
-            AND f.user_id in (
-                SELECT u.id  
-                FROM user u
-                WHERE u.uid = :uid 
-            )
-        GROUP BY f.id;
-      """
-    )
-      .bind("uid", uid)
-      .fetch().all()
-      .map { row -> convert(row) }
-      .collectList()
-      .awaitSingle()
-  }
-
   private fun convert(row: MutableMap<String, Any>): UserFolderListResult {
     return UserFolderListResult(
       id = row["id"].toString().toLong(),
