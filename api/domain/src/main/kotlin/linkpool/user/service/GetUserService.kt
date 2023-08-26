@@ -23,16 +23,6 @@ class GetUserService(
             if (!user.checkInfoCreated()) throw NotSignedUpException()
         }
     }
-    override suspend fun getByUid(uid: String): User {
-        return userPort.findByUid(uid) ?.also { user ->
-            if (!user.checkInfoCreated()) throw NotSignedUpException()
-        } ?: throw DataNotFoundException("회원이 존재하지 않습니다. uid: $uid")
-    }
-    override suspend fun getByUidOrNull(uid: String): User? {
-        return userPort.findByUid(uid) ?.also { user ->
-            if (!user.checkInfoCreated()) throw NotSignedUpException()
-        }
-    }
     override suspend fun existsByNickname(nickname: String): Boolean {
         return userPort.existsByInfoNickname(nickname)
     }

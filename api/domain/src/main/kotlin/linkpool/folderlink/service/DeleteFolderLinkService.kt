@@ -5,29 +5,23 @@ import linkpool.exception.NotAuthorizedForDataException
 import linkpool.folder.port.`in`.DeleteFolderUseCase
 import linkpool.folder.port.out.FolderPort
 import linkpool.folderlink.port.`in`.DeleteFolderLinkUseCase
-import linkpool.folderlink.port.`in`.LinkBatchEventPort
-import linkpool.user.port.`in`.GetUserUseCase
 import javax.transaction.Transactional
 
 @DomainComponent
 @Transactional
 class DeleteFolderLinkService(
     private val folderPort: FolderPort,
-    private val getUserUseCase: GetUserUseCase,
     private val deleteFolderUseCase: DeleteFolderUseCase,
 ) : DeleteFolderLinkUseCase{
 
-  override suspend fun delete(uid: String, folderId: Long) {
-
-    val user = getUserUseCase.getByUid(uid)
-
+  override suspend fun delete(userId: Long, folderId: Long) {
     val folder = folderPort.getById(folderId)
 
-    if(!folder.isOwner(user.id)) {
+    if(!folder.isOwner(userId)) {
       throw NotAuthorizedForDataException()
     }
 
-    deleteFolderUseCase.delete(uid, folderId)
+    deleteFolderUseCase.delete(userId, folderId)
 
     /**
      * 링크 삭제 처리를 별도의 프로세스에서 진행한다.
