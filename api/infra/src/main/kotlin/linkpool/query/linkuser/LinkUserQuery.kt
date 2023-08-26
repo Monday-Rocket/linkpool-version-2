@@ -5,6 +5,6 @@ import linkpool.LinkPoolPageRequest
 import linkpool.link.port.`in`.LinkResponse
 
 interface LinkUserQuery {
-    suspend fun getUnclassifiedLinks(uid: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkResponse>
+    suspend fun getUnclassifiedLinks(userId: Long, paging: LinkPoolPageRequest): LinkPoolPage<LinkResponse>
 
 }

@@ -7,30 +7,25 @@ import linkpool.folderlink.port.`in`.BulkCreateRequest
 import linkpool.folderlink.port.`in`.CreateFolderLinkBulkUseCase
 import linkpool.link.port.`in`.CreateLinkUseCase
 import linkpool.link.port.`in`.SaveLinkRequest
-import linkpool.user.port.`in`.GetUserUseCase
 import javax.transaction.Transactional
 
 @DomainComponent
 @Transactional
 class CreateFolderLinkBulkService(
-    private val getUserUseCase: GetUserUseCase,
     private val createFolderUseCase: CreateFolderUseCase,
     private val folderPort: FolderPort,
     private val createLinkUseCase: CreateLinkUseCase
 ): CreateFolderLinkBulkUseCase {
 
-    override suspend fun createBulk(uid: String, request: BulkCreateRequest) {
+    override suspend fun createBulk(userId: Long, request: BulkCreateRequest) {
+        createFolderUseCase.createBulk(userId, request.newFolders)
 
-        val user = getUserUseCase.getByUid(uid)
-
-        createFolderUseCase.createBulk(user, request.newFolders)
-
-        val folders = folderPort.findAllByUserIdAndNameIn(user.id,
+        val folders = folderPort.findAllByUserIdAndNameIn(userId,
             request.newLinks.filter { it.folderName != null }.map {
             it.folderName!!
         })
 
-        createLinkUseCase.createBulk(user, request.newLinks.map {
+        createLinkUseCase.createBulk(userId, request.newLinks.map {
             SaveLinkRequest(
                 url = it.url,
                 title = it.title,

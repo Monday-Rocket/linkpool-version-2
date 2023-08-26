@@ -6,32 +6,27 @@ import linkpool.folder.model.Folder
 import linkpool.folder.port.`in`.CreateFolderUseCase
 import linkpool.folder.port.`in`.SaveFolderRequest
 import linkpool.folder.port.out.FolderPort
-import linkpool.user.model.User
-import linkpool.user.port.`in`.GetUserUseCase
 import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @DomainComponent
 @Transactional
 class CreateFolderService(
-  private val getUserUseCase: GetUserUseCase,
   private val folderPort: FolderPort,
 ) : CreateFolderUseCase {
 
-  override suspend fun create(uid: String, request: SaveFolderRequest) {
-    val user = getUserUseCase.getByUid(uid)
-
-    if (folderPort.existsByUserIdAndName(user.id, request.name)) {
+  override suspend fun create(userId: Long, request: SaveFolderRequest) {
+    if (folderPort.existsByUserIdAndName(userId, request.name)) {
       throw DuplicateFolderNameException()
     }
 
-    val folder = Folder(userId = user.id, name = request.name, visible = request.visible ?: false)
+    val folder = Folder(userId = userId, name = request.name, visible = request.visible ?: false)
 
     folderPort.save(folder)
   }
 
-  override suspend fun createBulk(user: User, request: List<SaveFolderRequest>) {
-    val existingFolders = folderPort.findAllByUserIdAndNameIn(user.id, request.map { it.name })
+  override suspend fun createBulk(userId: Long, request: List<SaveFolderRequest>) {
+    val existingFolders = folderPort.findAllByUserIdAndNameIn(userId, request.map { it.name })
 
     val notExisting = request.filterNot { requestEach -> existingFolders.any { existingEach ->
       requestEach.name == existingEach.name
@@ -39,7 +34,7 @@ class CreateFolderService(
 
     folderPort.saveAll(notExisting.map {
       Folder(
-        userId = user.id,
+        userId = userId,
         name = it.name,
         visible = it.visible ?: false,
         createdDateTime = it.createdAt ?: LocalDateTime.now()

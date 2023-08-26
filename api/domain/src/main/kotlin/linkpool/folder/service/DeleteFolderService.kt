@@ -4,21 +4,18 @@ import linkpool.common.DomainComponent
 import linkpool.exception.NotAuthorizedForDataException
 import linkpool.folder.port.`in`.DeleteFolderUseCase
 import linkpool.folder.port.out.FolderPort
-import linkpool.user.port.`in`.GetUserUseCase
 import javax.transaction.Transactional
 
 @DomainComponent
 @Transactional
 class DeleteFolderService(
   private val folderPort: FolderPort,
-  private val userUseCase: GetUserUseCase
 ) : DeleteFolderUseCase {
 
-  override suspend fun delete(uid: String, folderId: Long) {
-    val user = userUseCase.getByUid(uid)
+  override suspend fun delete(userId: Long, folderId: Long) {
     val folder = folderPort.getById(folderId)
 
-    if(user.id != folder.userId) throw NotAuthorizedForDataException()
+    if(userId != folder.userId) throw NotAuthorizedForDataException()
 
     folderPort.softDelete(folderId)
   }

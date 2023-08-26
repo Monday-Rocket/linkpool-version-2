@@ -19,15 +19,13 @@ class MainPageQueryService(
     private val mainPageRepository: MainPageRepository,
     private val getUserUseCase: GetUserUseCase
 ): MainPageQuery {
-    override suspend fun getAll(paging: LinkPoolPageRequest, uid: String): LinkPoolPage<LinkWithUserResponse> {
-        val me = getUserUseCase.getByUid(uid)
-        return mainPageRepository.findAll(me.id, PageRequest.of(paging.page_no, paging.page_size)).let{
+    override suspend fun getAll(paging: LinkPoolPageRequest, loggedInUserId: Long): LinkPoolPage<LinkWithUserResponse> {
+        return mainPageRepository.findAll(loggedInUserId, PageRequest.of(paging.page_no, paging.page_size)).let{
             toModel(it).awaitSingle()
         }
     }
-    override suspend fun getByUserId(jobGroupId: Long, paging: LinkPoolPageRequest, uid: String): LinkPoolPage<LinkWithUserResponse> {
-        val me = getUserUseCase.getByUid(uid)
-        return mainPageRepository.findByUserId(jobGroupId, me.id, PageRequest.of(paging.page_no, paging.page_size)).let{
+    override suspend fun getByUserId(jobGroupId: Long, paging: LinkPoolPageRequest, loggedInUserId: Long): LinkPoolPage<LinkWithUserResponse> {
+        return mainPageRepository.findByJobGroup(jobGroupId, loggedInUserId, PageRequest.of(paging.page_no, paging.page_size)).let{
             toModel(it).awaitSingle()
         }
     }
