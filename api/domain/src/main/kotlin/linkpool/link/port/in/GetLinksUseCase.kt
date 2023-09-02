@@ -6,6 +6,5 @@ import linkpool.link.model.Link
 
 interface GetLinksUseCase {
 	suspend fun getByUserId(userId: Long, paging: LinkPoolPageRequest): LinkPoolPage<Link>
-	suspend fun getByFolderId(folderId: Long, paging: LinkPoolPageRequest): LinkPoolPage<Link>
 
 }

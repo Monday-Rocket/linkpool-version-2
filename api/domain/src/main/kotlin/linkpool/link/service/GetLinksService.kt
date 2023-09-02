@@ -24,15 +24,4 @@ class GetLinksService(
         )
     }
   }
-  override suspend fun getByFolderId(folderId: Long, paging: LinkPoolPageRequest): LinkPoolPage<Link> {
-    return linkPort.findPageByFolderIdOrderByCreatedDateTimeDesc(folderId, paging).let {
-        LinkPoolPage(
-            page_no = it.page_no,
-            page_size = it.page_size,
-            total_count = it.total_count,
-            total_page = it.total_page,
-            contents = it.contents
-        )
-    }
-  }
 }

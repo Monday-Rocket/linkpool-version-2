@@ -33,23 +33,11 @@ class LinkDataAdapter(
         )
     }
 
-    override suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
-        val pageRequest = toSpringPageRequest(linkPoolPageRequest)
-        val list = linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId, linkPoolPageRequest.page_no, linkPoolPageRequest.page_size)
-        val count = linkRepository.countByFolderId(folderId)
-        return toModel(
-                PageImpl(list, pageRequest, count)
-        )
-    }
-
     override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(userId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
         val list = linkRepository.findByUserIdOrderByCreatedDateTimeDesc(userId, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
         val count = linkRepository.countByUserId(userId)
         return toModel(PageImpl(list, pageRequest, count))
-    }
-    override suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Link? {
-        return toModel(linkRepository.findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId))
     }
 
     override suspend fun delete(link: Link) {

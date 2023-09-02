@@ -8,9 +8,7 @@ interface LinkPort {
     suspend fun findById(id: Long): Link
     suspend fun save(link: Link): Link
     suspend fun saveAll(links: List<Link>): List<Link>
-    suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, pageable: LinkPoolPageRequest): LinkPoolPage<Link>
     suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(userId: Long, pageable: LinkPoolPageRequest): LinkPoolPage<Link>
-    suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Link?
     suspend fun delete(link: Link)
     suspend fun update(link: Link)
     suspend fun deleteBatchByUserId(userId: Long)
