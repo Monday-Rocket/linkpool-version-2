@@ -5,7 +5,6 @@ import linkpool.LinkPoolPage
 import linkpool.LinkPoolPageRequest
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import linkpool.adapters.link.r2dbc.repository.LinkRepository
-import linkpool.adapters.link.r2dbc.repository.getById
 import linkpool.link.model.InflowType
 import linkpool.link.model.Link
 import linkpool.link.port.out.LinkPort
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 
 
 @Service
@@ -22,7 +20,7 @@ class LinkDataAdapter(
 ) : LinkPort {
 
     override suspend fun findById(id: Long): Link {
-        return toModel(linkRepository.getById(id).awaitSingle())
+        return toModel(linkRepository.findById(id).awaitSingle())
     }
     override suspend fun save(link: Link): Link {
         return toModel(linkRepository.save(toJpa(link)).awaitSingle())
@@ -35,53 +33,23 @@ class LinkDataAdapter(
         )
     }
 
-    override suspend fun findAllByFolderId(folderId: Long): List<Link> {
-        return toModel(linkRepository.findAllByFolderId(folderId)
-            .collectList()
-            .awaitSingle()
-        )
-    }
-
-    override suspend fun findAllByUserId(userId: Long): List<Link> {
-        return toModel(linkRepository.findAllByFolderId(userId)
-            .collectList()
-            .awaitSingle()
-        )
-    }
-
-    override suspend fun countByFolderId(folderId: Long): Long {
-        return linkRepository.countByFolderId(folderId).awaitSingle()
-    }
-
-    override suspend fun countByUserIdAndFolderIdIsNull(userId: Long): Int {
-        return linkRepository.countByUserIdAndFolderIdIsNull(userId).awaitSingle()
-    }
-
     override suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
+        val list = linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId, linkPoolPageRequest.page_no, linkPoolPageRequest.page_size)
+        val count = linkRepository.countByFolderId(folderId)
         return toModel(
-            linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
-                .collectList()
-                .zipWith(linkRepository.countByFolderId(folderId))
-                .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
+                PageImpl(list, pageRequest, count)
         )
     }
 
-    override suspend fun existsByUserIdAndUrl(userId: Long, url: String): Boolean {
-        return linkRepository.existsByUserIdAndUrl(userId, url).awaitSingle()
-    }
-
-    override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(id: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
+    override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(userId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
-        return toModel(
-            linkRepository.findByUserIdOrderByCreatedDateTimeDesc(id, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
-                .collectList()
-                .zipWith(linkRepository.countByUserId(id))
-                .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
-            )
+        val list = linkRepository.findByUserIdOrderByCreatedDateTimeDesc(userId, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
+        val count = linkRepository.countByUserId(userId)
+        return toModel(PageImpl(list, pageRequest, count))
     }
     override suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Link? {
-        return toModel(linkRepository.findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId).awaitSingle())
+        return toModel(linkRepository.findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId))
     }
 
     override suspend fun delete(link: Link) {

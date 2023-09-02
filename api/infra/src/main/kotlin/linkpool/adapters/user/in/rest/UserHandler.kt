@@ -58,15 +58,6 @@ class UserHandler(
         )
     }
 
-//    suspend fun getFoldersByUserId(request: ServerRequest): ServerResponse {
-//        val userId = request.pathVariable("id").toLong()
-//        return ServerResponse.ok().bodyValueAndAwait(
-//            ApiResponse.success(
-//                folderUseCase.getByUserId(userId)
-//            )
-//        )
-//    }
-
     suspend fun signOut(request: ServerRequest): ServerResponse {
         val principal = getPrincipal()
 

@@ -1,25 +1,20 @@
-package linkpool.query.mainpage.r2dbc
+package linkpool.query.linkuser.r2dbc
 
-import linkpool.LinkPoolPageRequest
+import kotlinx.coroutines.reactor.awaitSingle
 import linkpool.jobgroup.port.`in`.JobGroupResponse
-import linkpool.link.port.`in`.LinkWithUserResponse
-import linkpool.user.port.`in`.UserResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Mono
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.ZonedDateTime
 
 @Repository
 class MainPageRepository(
     private val databaseClient: DatabaseClient,
 ) {
-    suspend fun findAll(loggedInUserId: Long, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>> {
-        return databaseClient.sql(
+    suspend fun findAll(loggedInUserId: Long, pageable: Pageable): Page<LinkWithUserResult> {
+        val list = databaseClient.sql(
             """
                 SELECT 
                     l.id                    as linkId,
@@ -58,24 +53,64 @@ class MainPageRepository(
                     user u ON u.id = l.user_id
                 JOIN 
                     job_group jg ON u.job_group_id = jg.id
+                WHERE l.deleted = 0
                 ORDER BY l.created_date_time DESC
                 LIMIT :limit
                 OFFSET :offset
     """
-    ).bind("visible", 1)
+    )
+            .bind("visible", 1)
             .bind("inflowType", 0)
             .bind("targetType", 1)
             .bind("loggedInUserId", loggedInUserId)
-            .bind("limit", paging.page_size)
-            .bind("offset", paging.page_size * paging.page_no)
+            .bind("limit", pageable.pageSize)
+            .bind("offset", pageable.pageSize * pageable.pageNumber)
           .fetch().all()
           .map { row -> convert(row) }
           .collectList()
-          .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong())}
+          .awaitSingle()
+
+    val count =  databaseClient.sql(
+        """
+                SELECT 
+                    l.*
+                FROM 
+                    link l
+                JOIN 
+                    folder f ON l.folder_id = f.id
+                AND 
+                    f.visible = :visible
+                AND 
+                    l.inflow_type = :inflowType
+                AND 
+                    l.id NOT IN
+                    (
+                        SELECT
+                            r.target_id 
+                        FROM
+                            report r
+                        WHERE 
+                            r.target_type = :targetType
+                        AND 
+                            r.reporter_Id = :loggedInUserId
+                    )
+                JOIN 
+                    user u ON u.id = l.user_id
+                JOIN 
+                    job_group jg ON u.job_group_id = jg.id
+                WHERE l.deleted = 0
+    """
+    ).bind("visible", 1)
+        .bind("inflowType", 0)
+        .bind("targetType", 1)
+        .bind("loggedInUserId", loggedInUserId)
+        .fetch().all().count().awaitSingle()
+
+    return PageImpl(list, pageable, count)
   }
 
-    suspend fun findByJobGroup(jobGroupId: Long, loggedInUserId: Long, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>>{
-        return databaseClient.sql(
+    suspend fun findByJobGroup(jobGroupId: Long, loggedInUserId: Long, pageable: Pageable): Page<LinkWithUserResult> {
+        val list = databaseClient.sql(
             """
             SELECT l.id                as linkId,
                    l.url               as url,
@@ -97,30 +132,68 @@ class MainPageRepository(
                      INNER JOIN
                  job_group jg on u.job_group_id = jg.id
                      LEFT OUTER JOIN
-                 report ru ON (l.user_id = ru.target_id OR ru.target_id = l.id)
+                 report ru ON (
+                        (l.user_id = ru.target_id OR l.id = ru.target_id)
+                        AND ru.reporter_id = :loggedInUserId
+                 )
             WHERE
               ru.id IS NULL
               AND u.job_group_id = :jobGroupId
               AND f.visible = :visible
               AND l.inflow_type = :inflowType
+              AND l.deleted = 0
             ORDER BY l.created_date_time DESC
             LIMIT :limit
             OFFSET :offset
-    """).bind("jobGroupId", jobGroupId)
+    """)
+            .bind("loggedInUserId", loggedInUserId)
+            .bind("jobGroupId", jobGroupId)
             .bind("visible", 1)
             .bind("inflowType", 0)
-            .bind("limit", paging.page_size)
-            .bind("offset", paging.page_size * paging.page_no)
+            .bind("limit", pageable.pageSize)
+            .bind("offset", pageable.pageSize * pageable.pageNumber)
             .fetch().all()
             .map { row -> convert(row) }
             .collectList()
-            .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong()) }
+            .awaitSingle()
+
+        val count = databaseClient.sql(
+            """
+            SELECT 
+                l.*
+            FROM link l
+                     INNER JOIN
+                 folder f ON l.folder_id = f.id
+                     INNER JOIN
+                 user u on l.user_id = u.id
+                     INNER JOIN
+                 job_group jg on u.job_group_id = jg.id
+                     LEFT OUTER JOIN
+                 report ru 
+                    ON (
+                        (l.user_id = ru.target_id OR l.id = ru.target_id)
+                         and ru.reporter_id = :loggedInUserId
+                    )
+            WHERE
+              ru.id IS NULL
+              AND u.job_group_id = :jobGroupId
+              AND f.visible = :visible
+              AND l.inflow_type = :inflowType
+              AND l.deleted = 0
+    """)
+            .bind("loggedInUserId", loggedInUserId)
+            .bind("jobGroupId", jobGroupId)
+            .bind("visible", 1)
+            .bind("inflowType", 0)
+            .fetch().all().count().awaitSingle()
+
+        return PageImpl(list, pageable, count)
     }
 
-    private fun convert(row: MutableMap<String, Any>): LinkWithUserResponse {
-        return LinkWithUserResponse(
+    private fun convert(row: MutableMap<String, Any>): LinkWithUserResult {
+        return LinkWithUserResult(
             id = row["linkId"].toString().toLong(),
-            user = UserResponse(
+            user = UserResult(
                 row["userId"].toString().toLong(),
                 row["nickname"]?.toString(),
                 JobGroupResponse(
@@ -134,7 +207,7 @@ class MainPageRepository(
             image = row["image"]?.toString(),
             folderId = row["folderId"]?.toString()?.toLong(),
             describe = row["linkDescribe"]?.toString(),
-            createdDateTime = LocalDateTime.parse(row["linkCreatedDateTime"].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z[UTC]'"))
+            createdDateTime = (row["linkCreatedDateTime"] as ZonedDateTime).toLocalDateTime()
         )
     }
 }
