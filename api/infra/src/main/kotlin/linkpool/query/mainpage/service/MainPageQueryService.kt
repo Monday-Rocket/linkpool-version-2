@@ -10,22 +10,22 @@ import linkpool.query.mainpage.r2dbc.MainPageRepository
 import linkpool.user.port.`in`.GetUserUseCase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
 
 @DomainComponent
+@Transactional(readOnly = true)
 class MainPageQueryService(
     private val mainPageRepository: MainPageRepository,
     private val getUserUseCase: GetUserUseCase
 ): MainPageQuery {
-    override suspend fun getAll(paging: LinkPoolPageRequest, uid: String): LinkPoolPage<LinkWithUserResponse> {
-        val me = getUserUseCase.getByUid(uid)
-        return mainPageRepository.findAll(me.id, paging).let{
+    override suspend fun getAll(paging: LinkPoolPageRequest, loggedInUserId: Long): LinkPoolPage<LinkWithUserResponse> {
+        return mainPageRepository.findAll(loggedInUserId, paging).let{
             toModel(it).awaitSingle()
         }
     }
-    override suspend fun getByUserId(jobGroupId: Long, paging: LinkPoolPageRequest, uid: String): LinkPoolPage<LinkWithUserResponse> {
-        val me = getUserUseCase.getByUid(uid)
-        return mainPageRepository.findByUserId(jobGroupId, me.id, paging).let{
+    override suspend fun getByJobGroupId(jobGroupId: Long, paging: LinkPoolPageRequest, loggedInUserId: Long): LinkPoolPage<LinkWithUserResponse> {
+        return mainPageRepository.findByJobGroup(jobGroupId, loggedInUserId, paging).let{
             toModel(it).awaitSingle()
         }
     }

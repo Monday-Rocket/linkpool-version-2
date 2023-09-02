@@ -12,7 +12,7 @@ import linkpool.support.spec.afterRootTest
 
 class ReportQueryServiceTest : BehaviorSpec({
     val reportPort = mockk<ReportPort>()
-    val reportQueryService = ReportQueryService(reportPort)
+    val reportQueryService = GetReportService(reportPort)
 
     Given("어떤 신고 정보에 대해서") {
         val report = createReport()

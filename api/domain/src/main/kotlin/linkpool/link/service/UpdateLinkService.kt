@@ -6,17 +6,16 @@ import linkpool.link.port.`in`.UpdateLinkRequest
 import linkpool.link.port.`in`.UpdateLinkUseCase
 import linkpool.link.port.out.LinkPort
 import linkpool.link.port.out.getById
-import linkpool.user.port.`in`.GetUserUseCase
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class UpdateLinkService(
-  private val getUserUseCase: GetUserUseCase,
   private val linkPort: LinkPort,
 ): UpdateLinkUseCase {
-  override suspend fun update(uid: String, linkId: Long, request: UpdateLinkRequest) {
-    val user = getUserUseCase.getByUid(uid)
+  override suspend fun update(userId: Long, linkId: Long, request: UpdateLinkRequest) {
     val link = linkPort.getById(linkId)
-    if (!link.isSameUser(user.id)) throw NotAuthorizedForDataException()
+    if (!link.isSameUser(userId)) throw NotAuthorizedForDataException()
 
     request.url ?.let { url ->
       link.updateUrl(url)

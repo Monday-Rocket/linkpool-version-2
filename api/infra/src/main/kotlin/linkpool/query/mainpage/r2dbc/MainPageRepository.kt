@@ -1,7 +1,6 @@
 package linkpool.query.mainpage.r2dbc
 
 import linkpool.LinkPoolPageRequest
-import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import linkpool.jobgroup.port.`in`.JobGroupResponse
 import linkpool.link.port.`in`.LinkWithUserResponse
 import linkpool.user.port.`in`.UserResponse
@@ -9,8 +8,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.r2dbc.repository.Query
-import org.springframework.data.repository.query.Param
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
@@ -77,7 +74,7 @@ class MainPageRepository(
           .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong())}
   }
 
-    suspend fun findByUserId(jobGroupId: Long, loggedInUserId: Long, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>>{
+    suspend fun findByJobGroup(jobGroupId: Long, loggedInUserId: Long, paging: LinkPoolPageRequest): Mono<Page<LinkWithUserResponse>>{
         return databaseClient.sql(
             """
             SELECT l.id                as linkId,
@@ -119,6 +116,7 @@ class MainPageRepository(
             .collectList()
             .map { list -> PageImpl(list, PageRequest.of(paging.page_no, paging.page_size), list.size.toLong()) }
     }
+
     private fun convert(row: MutableMap<String, Any>): LinkWithUserResponse {
         return LinkWithUserResponse(
             id = row["linkId"].toString().toLong(),
