@@ -1,6 +1,5 @@
 package linkpool.adapters.link.r2dbc.entity
 
-import linkpool.link.model.InflowType
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate

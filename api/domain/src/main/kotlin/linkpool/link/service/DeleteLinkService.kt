@@ -1,10 +1,10 @@
 package linkpool.link.service
 
 import linkpool.common.DomainComponent
+import linkpool.exception.DataNotFoundException
 import linkpool.exception.NotAuthorizedForDataException
 import linkpool.link.port.`in`.DeleteLinkUseCase
 import linkpool.link.port.out.LinkPort
-import linkpool.link.port.out.getById
 import javax.transaction.Transactional
 
 @DomainComponent
@@ -14,7 +14,7 @@ class DeleteLinkService(
   ): DeleteLinkUseCase {
 
   override suspend fun delete(userId: Long, linkId: Long) {
-    val link = linkPort.getById(linkId)
+    val link = linkPort.findById(linkId) ?: throw DataNotFoundException("링크가 존재하지 않습니다. id: $linkId")
 
     if (link.isSameUser(userId))
       throw NotAuthorizedForDataException()

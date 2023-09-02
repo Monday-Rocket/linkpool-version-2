@@ -3,7 +3,7 @@ package linkpool.query.userfolder.r2dbc
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Repository
 class UserFolderRepository(
@@ -30,11 +30,11 @@ class UserFolderRepository(
   private fun convert(row: MutableMap<String, Any>): UserFolderListResult {
     return UserFolderListResult(
       id = row["id"].toString().toLong(),
-      name = row["nickname"].toString(),
-      thumbnail = row["thumbnail"].toString(),
+      name = row["name"].toString(),
+      thumbnail = row["image"].toString(),
       visible = row["visible"].toString().toBoolean(),
       linkCount = row["link_count"]?.toString()!!.toInt(),
-      createdDateTime = LocalDateTime.parse(row["createdDateTime"].toString())
+      createdDateTime = (row["created_date_time"] as ZonedDateTime).toLocalDateTime()
     )
   }
 }
