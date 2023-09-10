@@ -13,8 +13,8 @@ class SignOutService(
     private val userEventPublishPort: UserEventPublishPort
 ): SignOutUseCase {
     override suspend fun signOut(user: User) {
-        userEventPublishPort.publishUserSignedOutEvent(UserSignedOutEvent(user.id))
         user.delete()
         userPort.patch(user)
+        userEventPublishPort.publishUserSignedOutEvent(UserSignedOutEvent(user.id))
     }
 }

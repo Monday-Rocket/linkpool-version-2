@@ -31,16 +31,14 @@ class UserSignedOutEventListener(
     @ServiceActivator(inputChannel = "signedOutEvent")
     fun handleForSignedOutEventListener(@Payload message: Message<UserSignedOutEvent>) {
         CoroutineScope(Job()).launch {
-            val folderEventDeferred = safeAsync {
+            safeAsync {
                 folderEventListener.deleteBatchAll(message.payload)
-            }
-            val linkEventDeferred = safeAsync {
-                linkEventListener.deleteBatchAll(message.payload)
-            }
-            folderEventDeferred.await()
+            }.await()
                 .onSuccess { log.info("succeed in folderEventListener from UserSignedOut... userId: ${message.payload.userId}") }
                 .onFailure { e -> log.info("Error in folderEventListener from UserSignedOut... userId: ${message.payload.userId} \n error: ${e.message}") }
-            linkEventDeferred.await()
+            safeAsync {
+                linkEventListener.deleteBatchAll(message.payload)
+            }.await()
                 .onSuccess { log.info("succeed in linkEventListener from UserSignedOut... userId: ${message.payload.userId}") }
                 .onFailure { e -> log.info("Error in linkEventListener from UserSignedOut... userId: ${message.payload.userId} \n error: ${e.message}") }
         }
