@@ -25,7 +25,7 @@ class ReportR2dbcEntity (
     val otherReason: String? = null,
 
     @Column
-    val targetType: ReportTargetType,
+    val targetType: Int,
 
     @Column
     val targetId: Long,

@@ -5,7 +5,7 @@ import linkpool.LinkPoolPage
 import linkpool.LinkPoolPageRequest
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
 import linkpool.adapters.link.r2dbc.repository.LinkRepository
-import linkpool.adapters.link.r2dbc.repository.getById
+import linkpool.link.model.InflowType
 import linkpool.link.model.Link
 import linkpool.link.port.out.LinkPort
 import org.springframework.data.domain.Page
@@ -20,7 +20,7 @@ class LinkDataAdapter(
 ) : LinkPort {
 
     override suspend fun findById(id: Long): Link {
-        return toModel(linkRepository.getById(id).awaitSingle())
+        return toModel(linkRepository.findById(id).awaitSingle())
     }
     override suspend fun save(link: Link): Link {
         return toModel(linkRepository.save(toJpa(link)).awaitSingle())
@@ -33,48 +33,11 @@ class LinkDataAdapter(
         )
     }
 
-    override suspend fun findAllByFolderId(folderId: Long): List<Link> {
-        return toModel(linkRepository.findAllByFolderId(folderId))
-    }
-
-    override suspend fun findAllByUserId(userId: Long): List<Link> {
-        return toModel(linkRepository.findAllByFolderId(userId))
-    }
-
-    override suspend fun countByFolderId(folderId: Long): Int {
-        return linkRepository.countByFolderId(folderId)
-    }
-
-    override suspend fun countByUserIdAndFolderIdIsNull(userId: Long): Int {
-        return linkRepository.countByUserIdAndFolderIdIsNull(userId)
-    }
-
-    override suspend fun findPageByFolderIdOrderByCreatedDateTimeDesc(folderId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
+    override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(userId: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
         val pageRequest = toSpringPageRequest(linkPoolPageRequest)
-
-        return toModel(
-            linkRepository.findByFolderIdOrderByCreatedDateTimeDesc(folderId)
-                .collectList()
-                .zipWith(linkRepository.count())
-                .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
-        )
-    }
-
-    override suspend fun existsByUserIdAndUrl(userId: Long, url: String): Boolean {
-        return linkRepository.existsByUserIdAndUrl(userId, url)
-    }
-
-    override suspend fun findPageByUserIdOrderByCreatedDateTimeDesc(id: Long, linkPoolPageRequest: LinkPoolPageRequest): LinkPoolPage<Link> {
-        val pageRequest = toSpringPageRequest(linkPoolPageRequest)
-        return toModel(
-            linkRepository.findByUserIdOrderByCreatedDateTimeDesc(id)
-                .collectList()
-                .zipWith(linkRepository.count())
-                .map { list -> PageImpl(list.t1, pageRequest, list.t2) }.awaitSingle()
-            )
-    }
-    override suspend fun findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId: Long): Link? {
-        return linkRepository.findFirst1ByFolderIdOrderByCreatedDateTimeDesc(folderId)?.let { toModel(it) }
+        val list = linkRepository.findByUserIdOrderByCreatedDateTimeDesc(userId, linkPoolPageRequest.page_size, linkPoolPageRequest.page_size * linkPoolPageRequest.page_no)
+        val count = linkRepository.countByUserId(userId)
+        return toModel(PageImpl(list, pageRequest, count))
     }
 
     override suspend fun delete(link: Link) {
@@ -122,7 +85,11 @@ class LinkDataAdapter(
             title = entity.title,
             image = entity.image,
             describe = entity.describe,
-            inflowType = entity.inflowType,
+            inflowType = when(entity.inflowType){
+                0 -> InflowType.CREATE
+                1 -> InflowType.BRING
+                else -> InflowType.CREATE
+            },
             createdDateTime = entity.createdDateTime,
             modifiedDateTime = entity.modifiedDateTime
         )
@@ -136,7 +103,7 @@ class LinkDataAdapter(
             title = model.title,
             image = model.image,
             describe = model.describe,
-            inflowType = model.inflowType,
+            inflowType = model.inflowType.ordinal,
             createdDateTime = model.createdDateTime
         )
 

@@ -1,11 +1,10 @@
 package linkpool.adapters.user.`in`.rest
 
-import kotlinx.coroutines.reactor.awaitSingle
 import linkpool.adapters.user.`in`.rest.dto.ApiUserInfoRequest
 import linkpool.common.rest.ApiResponse
 import linkpool.query.userjobgroup.UserJobGroupQuery
+import linkpool.security.getPrincipal
 import linkpool.user.port.`in`.*
-import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -22,41 +21,36 @@ class UserHandler(
 ) {
 
     suspend fun createUser(request: ServerRequest): ServerResponse {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
-        val token = createUserUseCase.createUser(uid)
+        val principal = getPrincipal()
+
+        val token = createUserUseCase.createUser(principal.uid)
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(token))
     }
 
     suspend fun updateMyInfo(request: ServerRequest): ServerResponse {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
+        val principal = getPrincipal()
         val updateUserRequest = request.awaitBody<ApiUserInfoRequest>()
+
         updateUserUseCase.updateUserInfo(
-            getUserUseCase.getByUid(uid),
+            principal.id,
             toDomain(updateUserRequest)
         )
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(null))
     }
 
     suspend fun getMyInformation(request: ServerRequest): ServerResponse {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
+        val principal = getPrincipal()
+
         return ServerResponse.ok().bodyValueAndAwait(
             ApiResponse.success(
-                userJobGroupQuery.getInformationByUid(uid)
+                userJobGroupQuery.getInformationById(principal.id)
             )
         )
     }
 
     suspend fun getUserInfoById(request: ServerRequest): ServerResponse {
         val userId = request.pathVariable("userId").toLong()
+
         return ServerResponse.ok().bodyValueAndAwait(
             ApiResponse.success(
                 userJobGroupQuery.getInformationById(userId)
@@ -64,21 +58,10 @@ class UserHandler(
         )
     }
 
-//    suspend fun getFoldersByUserId(request: ServerRequest): ServerResponse {
-//        val userId = request.pathVariable("id").toLong()
-//        return ServerResponse.ok().bodyValueAndAwait(
-//            ApiResponse.success(
-//                folderUseCase.getByUserId(userId)
-//            )
-//        )
-//    }
-
     suspend fun signOut(request: ServerRequest): ServerResponse {
-        val context = ReactiveSecurityContextHolder
-            .getContext()
-            .awaitSingle()
-        val uid = context.authentication.name
-        signOutUseCase.signOut(getUserUseCase.getByUid(uid))
+        val principal = getPrincipal()
+
+        signOutUseCase.signOut(principal.id)
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(null))
     }
 
@@ -87,7 +70,9 @@ class UserHandler(
         require(!nickname.isEmpty) {
             throw IllegalArgumentException("nickname is needed")
         }
-        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(getUserUseCase.existsByNickname(nickname.get())))
+
+        val result = getUserUseCase.existsByNickname(nickname.get())
+        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(result))
     }
 
     fun toDomain(infra: ApiUserInfoRequest) =

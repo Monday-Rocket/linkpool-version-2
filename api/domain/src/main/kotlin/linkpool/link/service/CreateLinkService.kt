@@ -6,20 +6,18 @@ import linkpool.link.model.Link
 import linkpool.link.port.`in`.CreateLinkUseCase
 import linkpool.link.port.`in`.SaveLinkRequest
 import linkpool.link.port.out.LinkPort
-import linkpool.user.model.User
-import linkpool.user.port.`in`.GetUserUseCase
 import java.time.LocalDateTime
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class CreateLinkService(
-  private val getUserUseCase: GetUserUseCase,
   private val linkPort: LinkPort,
   ): CreateLinkUseCase {
-  override suspend fun create(uid: String, request: SaveLinkRequest) {
-    val user = getUserUseCase.getByUid(uid)
+  override suspend fun create(userId: Long, request: SaveLinkRequest) {
     linkPort.save(
       Link(
-        userId = user.id,
+        userId = userId,
         url = request.url,
         title = request.title,
         describe = request.describe,
@@ -31,10 +29,10 @@ class CreateLinkService(
     )
   }
 
-  override suspend fun createBulk(user: User, request: List<SaveLinkRequest>) {
+  override suspend fun createBulk(userId: Long, request: List<SaveLinkRequest>) {
     val links = linkPort.saveAll(request.map {
       Link(
-        userId = user.id,
+        userId = userId,
         url = it.url,
         title = it.title,
         describe = it.describe,

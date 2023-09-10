@@ -53,3 +53,7 @@ dependencies {
   // integration
   implementation("org.springframework.integration:spring-integration-event:6.1.2")
 }
+
+allOpen{
+  annotation("org.springframework.transaction.annotation.Transactional")
+}

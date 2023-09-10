@@ -6,8 +6,10 @@ import linkpool.user.model.UserSignedOutEvent
 import linkpool.user.port.`in`.SignOutUseCase
 import linkpool.user.port.out.UserEventPublishPort
 import linkpool.user.port.out.UserPort
+import javax.transaction.Transactional
 
 @DomainComponent
+@Transactional
 class SignOutService(
     private val userPort: UserPort,
     private val userEventPublishPort: UserEventPublishPort
