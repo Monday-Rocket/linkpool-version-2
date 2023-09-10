@@ -41,7 +41,11 @@ class ReportDataAdapter(
             ),
             target = toModel(
                 ReportTargetJpaValue(
-                    entity.targetType,
+                    when(entity.targetType){
+                        0 -> ReportTargetType.USER
+                        1 -> ReportTargetType.LINK
+                        else -> ReportTargetType.USER
+                    },
                     entity.targetId
                 )
             ),
@@ -65,7 +69,7 @@ class ReportDataAdapter(
             reporterId = model.reporterId,
             reason = model.reason.reason,
             otherReason = model.reason.otherReason,
-            targetType = model.target.targetType,
+            targetType = model.target.targetType.ordinal,
             targetId = model.target.targetId,
             createdDateTime = model.createdDateTime
         )

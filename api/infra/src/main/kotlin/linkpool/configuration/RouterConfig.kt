@@ -28,7 +28,7 @@ class RouterConfig(
                     PATCH("/me", userHandler::updateMyInfo)
                     GET("/me", userHandler::getMyInformation)
                     GET("/{userId}", userHandler::getUserInfoById)
-//                    GET("/{userId}/folders", userHandler::getFoldersByUserId)
+                    GET("/{userId}/folders", folderHandler::getByUserId)
                     DELETE("", userHandler::signOut)
                     HEAD("", queryParam("nickname") { _: String? -> true }, userHandler::checkIfExistsByNickname)
                 }
@@ -37,9 +37,9 @@ class RouterConfig(
                     PATCH("/{linkId}", linkHandler::update)
                     DELETE("/{linkId}", linkHandler::delete)
                     GET("", linkHandler::getByUserId)
-                    GET("/unclassified", linkHandler::getLinksOfFolder)
-                    GET("/search", linkHandler::searchLinkByKeyword)
-                    GET("/my_link/search/", linkHandler::searchMyLinkByKeyword)
+                    GET("/unclassified", linkHandler::getMyUnclassifiedLinks)
+                    GET("/search", queryParam("my_links_only") { value -> !value.toBoolean() }, linkHandler::searchLinkByKeyword)
+                    GET("/search", queryParam("my_links_only") { value -> value.toBoolean() },linkHandler::searchMyLinkByKeyword)
                 }
                 "/folders".nest {
                     POST("", folderHandler::create)

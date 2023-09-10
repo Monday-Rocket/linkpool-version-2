@@ -1,46 +1,145 @@
 package linkpool.query.linkuser.r2dbc
 
-import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
-import linkpool.link.model.InflowType
+import kotlinx.coroutines.reactor.awaitSingle
+import linkpool.jobgroup.port.`in`.JobGroupResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Mono
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Repository
 class LinkUserRepository(
     private val databaseClient: DatabaseClient,
 ) {
-    suspend fun findUnclassifiedLinks(userId: Long, pageable: Pageable): Mono<Page<LinkR2dbcEntity>> {
-        return databaseClient.sql(
+    suspend fun findUnclassifiedLinks(userId: Long, pageable: Pageable): Page<LinkWithUserResult> {
+        val list = databaseClient.sql(
             """
-                SELECT l.*
-                FROM link as l
-                WHERE user_id = :userId
-                AND folder_id IS NULL
+                SELECT 
+                    l.id,
+                    l.folder_id,
+                    l.url,
+                    l.title,
+                    l.image,
+                    l.describe,
+                    l.created_date_time,
+                    l.user_id,
+                    u.nickname,
+                    u.job_group_id,
+                    u.profile_image,
+                    j.name AS job_group_name
+                FROM link AS l
+                INNER JOIN user AS u ON l.user_id = u.id
+                INNER JOIN job_group AS j ON u.job_group_id = j.id
+                WHERE l.folder_id IS NULL
+                AND l.user_id = :userId
+                AND l.deleted = 0
                 ORDER BY created_date_time DESC
+                LIMIT :limit
+                OFFSET :offset
             """
-        ).bind("userId", userId)
+        )
+            .bind("userId", userId)
+            .bind("limit", pageable.pageSize)
+            .bind("offset", pageable.pageSize * pageable.pageNumber)
             .fetch().all()
             .map { row -> convert(row) }
             .collectList()
-            .map { list -> PageImpl(list, pageable, list.size.toLong()) }
+            .awaitSingle()
+
+        val count = databaseClient.sql(
+            """
+                SELECT 
+                    l.*
+                FROM link AS l
+                INNER JOIN user AS u ON l.user_id = u.id
+                INNER JOIN job_group AS j ON u.job_group_id = j.id
+                WHERE l.folder_id IS NULL
+                AND l.user_id = :userId
+                AND l.deleted = 0
+            """
+        )
+            .bind("userId", userId)
+            .fetch().all().count().awaitSingle()
+
+        return PageImpl(list, pageable, count)
     }
-    private fun convert(row: MutableMap<String, Any>): LinkR2dbcEntity {
-        return LinkR2dbcEntity(
+
+    suspend fun findPageOfMyFolder(userId: Long, folderId: Long, pageable: Pageable): Page<LinkWithUserResult> {
+        val list = databaseClient.sql(
+            """
+                SELECT 
+                    l.id,
+                    l.folder_id,
+                    l.url,
+                    l.title,
+                    l.image,
+                    l.describe,
+                    l.created_date_time,
+                    l.user_id,
+                    u.nickname,
+                    u.job_group_id,
+                    u.profile_image,
+                    j.name AS job_group_name
+                FROM link AS l
+                INNER JOIN folder AS f ON l.folder_id = f.id
+                INNER JOIN user AS u ON l.user_id = u.id
+                INNER JOIN job_group AS j ON u.job_group_id = j.id
+                WHERE f.id = :folderId
+                AND f.user_id = :userId
+                AND l.deleted = 0
+                ORDER BY created_date_time DESC
+                LIMIT :limit
+                OFFSET :offset
+            """
+        )
+            .bind("userId", userId)
+            .bind("folderId", folderId)
+            .bind("limit", pageable.pageSize)
+            .bind("offset", pageable.pageSize * pageable.pageNumber)
+            .fetch().all()
+            .map { row -> convert(row) }
+            .collectList()
+            .awaitSingle()
+
+        val count = databaseClient.sql(
+            """
+                SELECT 
+                    l.*
+                FROM link AS l
+                INNER JOIN folder AS f ON l.folder_id = f.id
+                INNER JOIN user AS u ON l.user_id = u.id
+                INNER JOIN job_group AS j ON u.job_group_id = j.id
+                WHERE f.id = :folderId
+                AND f.user_id = :userId
+                AND l.deleted = 0
+            """
+        )
+            .bind("userId", userId)
+            .bind("folderId", folderId)
+            .fetch().all().count().awaitSingle()
+
+        return PageImpl(list, pageable, count)
+    }
+    private fun convert(row: MutableMap<String, Any>): LinkWithUserResult {
+        return LinkWithUserResult(
             id = row["id"].toString().toLong(),
-            userId = row["userId"].toString().toLong(),
-            folderId = row["folderId"]?.toString()?.toLong(),
+            user = UserResult(
+                id = row["user_id"].toString().toLong(),
+                nickname = row["nickname"].toString(),
+                jobGroup = JobGroupResponse(
+                    id = row["job_group_id"].toString().toLong(),
+                    name = row["job_group_name"].toString(),
+                ),
+                profileImg = row["profile_image"].toString()
+            ),
+            folderId = row["folder_id"]?.toString()?.toLong(),
             url = row["url"].toString(),
-            title = row["url"]?.toString(),
+            title = row["title"]?.toString(),
             image = row["image"]?.toString(),
             describe = row["describe"]?.toString(),
-            inflowType = InflowType.valueOf(row["inflowType"].toString()),
-            createdDateTime = LocalDateTime.parse(row["createdDateTime"].toString()
-            )
+            createdDateTime = (row["created_date_time"] as ZonedDateTime).toLocalDateTime()
         )
     }
 }
