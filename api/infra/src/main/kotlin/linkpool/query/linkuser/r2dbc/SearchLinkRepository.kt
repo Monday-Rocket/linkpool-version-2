@@ -1,7 +1,7 @@
 package linkpool.query.linkuser.r2dbc
 
 import kotlinx.coroutines.reactor.awaitSingle
-import linkpool.jobgroup.port.`in`.JobGroupResponse
+import linkpool.user2.jobgroup.port.`in`.JobGroupResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -15,7 +15,7 @@ import java.time.ZonedDateTime
 class SearchLinkRepository(
     private val databaseClient: DatabaseClient
 ) {
-    suspend fun findPageByUserIdAndTitleContains(userId: Long, title: String, pageable: Pageable): Page<LinkWithUserResult> {
+    suspend fun findPageByCreatorIdAndTitleContains(creatorId: Long, title: String, pageable: Pageable): Page<LinkWithUserResult> {
         val list = databaseClient.sql(
             """
                SELECT 
@@ -26,7 +26,7 @@ class SearchLinkRepository(
                     l.folder_id             as folderId,
                     l.describe              as linkDescribe,
                     l.created_date_time     as linkCreatedDateTime,
-                    u.id                    as userId,
+                    u.id                    as creatorId,
                     u.nickname              as nickname,
                     u.profile_image         as profileImage,
                     jg.id                   as jobGroupId,
@@ -36,13 +36,13 @@ class SearchLinkRepository(
                 INNER JOIN
                     user as u
                 ON
-                    l.user_id = u.id
+                    l.creator_id = u.id
                 INNER JOIN 
                     job_group as jg
                 ON 
                     u.job_group_id = jg.id
                 WHERE
-                    l.user_id = :userId
+                    l.creator_id = :creatorId
                 AND 
                     l.title LIKE CONCAT('%', :title, '%')
                 AND
@@ -51,7 +51,7 @@ class SearchLinkRepository(
                 OFFSET :offset
             """
         )
-            .bind("userId", userId)
+            .bind("creatorId", creatorId)
             .bind("title", title)
             .bind("limit", pageable.pageSize)
             .bind("offset", pageable.pageSize * pageable.pageNumber)
@@ -65,14 +65,14 @@ class SearchLinkRepository(
                SELECT
                     l.*
                 FROM link as l
-                INNER JOIN user as u ON l.user_id = u.id
+                INNER JOIN user as u ON l.creator_id = u.id
                 INNER JOIN job_group as jg ON u.job_group_id = jg.id
-                WHERE l.user_id = :userId
+                WHERE l.creator_id = :creatorId
                 AND l.title LIKE CONCAT('%', :title, '%')
                 AND l.deleted = 0
             """
         )
-            .bind("userId", userId)
+            .bind("creatorId", creatorId)
             .bind("title", title)
             .fetch().all().count().awaitSingle()
 
@@ -91,7 +91,7 @@ class SearchLinkRepository(
                     l.folder_id             as folderId,
                     l.describe              as linkDescribe,
                     l.created_date_time     as linkCreatedDateTime,
-                    u.id                    as userId,
+                    u.id                    as creatorId,
                     u.nickname              as nickname,
                     u.profile_image         as profileImage,
                     jg.id                   as jobGroupId,
@@ -101,7 +101,7 @@ class SearchLinkRepository(
                 INNER JOIN 
                     folder as f ON l.folder_id = f.id
                 INNER JOIN 
-                    user u ON l.user_id = u.id
+                    user u ON l.creator_id = u.id
                 INNER JOIN 
                     job_group jg ON u.job_group_id = jg.id
                 WHERE 
@@ -145,7 +145,7 @@ class SearchLinkRepository(
                     l.*
                 FROM link as l
                 INNER JOIN folder as f ON l.folder_id = f.id
-                INNER JOIN user u ON l.user_id = u.id
+                INNER JOIN user u ON l.creator_id = u.id
                 INNER JOIN job_group jg ON u.job_group_id = jg.id
                 WHERE 
                     REPLACE(REPLACE(l.title, ' ', ''), '\n', '') like CONCAT('%', :keyword, '%')
@@ -178,8 +178,8 @@ class SearchLinkRepository(
     private fun convert(row: MutableMap<String, Any>): LinkWithUserResult {
         return LinkWithUserResult(
             id = row["linkId"].toString().toLong(),
-            user = UserResult(
-                row["userId"].toString().toLong(),
+            creator = UserResult(
+                row["creatorId"].toString().toLong(),
                 row["nickname"]?.toString(),
                 JobGroupResponse(
                     row["jobGroupId"].toString().toLong(),

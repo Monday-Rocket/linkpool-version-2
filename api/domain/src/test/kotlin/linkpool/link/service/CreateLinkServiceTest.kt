@@ -2,12 +2,13 @@ package linkpool.link.service
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.*
-import linkpool.link.model.InflowType
-import linkpool.link.model.Link
-import linkpool.link.port.`in`.SaveLinkRequest
-import linkpool.link.port.out.LinkPort
-import linkpool.user.model.User
-import linkpool.user.port.`in`.GetUserUseCase
+import linkpool.link.link.model.InflowType
+import linkpool.link.link.model.Link
+import linkpool.link.link.port.`in`.SaveLinkRequest
+import linkpool.link.link.port.out.LinkPort
+import linkpool.link.link.service.CreateLinkService
+import linkpool.user2.user.model.User
+import linkpool.user2.user.port.`in`.GetUserUseCase
 import java.time.LocalDateTime
 
 class CreateLinkUseCaseTest: BehaviorSpec({
@@ -34,7 +35,7 @@ class CreateLinkUseCaseTest: BehaviorSpec({
       inflowType = InflowType.CREATE
       )
     val link = Link(
-      userId = user.id,
+      creatorId = user.id,
       url = request.url,
       title = request.title,
       describe = request.describe,

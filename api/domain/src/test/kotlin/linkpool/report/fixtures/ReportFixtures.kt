@@ -1,7 +1,9 @@
 package linkpool.report.fixtures
 
 import linkpool.report.model.*
-import linkpool.report.port.`in`.CreateReportRequest
+import linkpool.report.report.model.*
+import linkpool.report.report.port.`in`.CreateReportRequest
+import linkpool.report2.report.model.*
 import java.time.LocalDateTime
 
 const val REPORT_OTHER_REASON: String = "기타 사유"

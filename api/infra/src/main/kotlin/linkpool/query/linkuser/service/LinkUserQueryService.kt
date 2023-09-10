@@ -13,16 +13,16 @@ import linkpool.query.linkuser.r2dbc.LinkWithUserResult
 class LinkUserQueryService(
     private val linkUserRepository: LinkUserRepository,
 ): LinkUserQuery {
-    override suspend fun getUnclassifiedLinks(userId: Long, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult> {
-        return linkUserRepository.findUnclassifiedLinks(userId, paging.toPageRequest()).toLinkPoolPage()
+    override suspend fun getUnclassifiedLinks(ownerId: Long, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult> {
+        return linkUserRepository.findUnclassifiedLinks(ownerId, paging.toPageRequest()).toLinkPoolPage()
     }
 
     override suspend fun getPageOfMyFolder(
-        userId: Long,
+        ownerId: Long,
         folderId: Long,
         paging: LinkPoolPageRequest
     ): LinkPoolPage<LinkWithUserResult> {
-        return linkUserRepository.findPageOfMyFolder(userId, folderId, paging.toPageRequest()).toLinkPoolPage()
+        return linkUserRepository.findPageOfMyFolder(ownerId, folderId, paging.toPageRequest()).toLinkPoolPage()
     }
 
 }

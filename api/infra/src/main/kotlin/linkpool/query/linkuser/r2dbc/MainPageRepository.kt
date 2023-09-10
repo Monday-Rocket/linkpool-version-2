@@ -1,7 +1,7 @@
 package linkpool.query.linkuser.r2dbc
 
 import kotlinx.coroutines.reactor.awaitSingle
-import linkpool.jobgroup.port.`in`.JobGroupResponse
+import linkpool.user2.jobgroup.port.`in`.JobGroupResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -24,7 +24,7 @@ class MainPageRepository(
                     l.folder_id             as folderId,
                     l.describe              as linkDescribe,
                     l.created_date_time     as linkCreatedDateTime,
-                    u.id                    as userId,
+                    u.id                    as creatorId,
                     u.nickname              as nickname,
                     u.profile_image         as profileImage,
                     jg.id                   as jobGroupId,
@@ -50,7 +50,7 @@ class MainPageRepository(
                             r.reporter_Id = :loggedInUserId
                     )
                 JOIN 
-                    user u ON u.id = l.user_id
+                    user u ON u.id = l.creator_id
                 JOIN 
                     job_group jg ON u.job_group_id = jg.id
                 WHERE l.deleted = 0
@@ -95,7 +95,7 @@ class MainPageRepository(
                             r.reporter_Id = :loggedInUserId
                     )
                 JOIN 
-                    user u ON u.id = l.user_id
+                    user u ON u.id = l.creator_id
                 JOIN 
                     job_group jg ON u.job_group_id = jg.id
                 WHERE l.deleted = 0
@@ -119,7 +119,7 @@ class MainPageRepository(
                    l.folder_id         as folderId,
                    l.describe          as linkDescribe,
                    l.created_date_time as linkCreatedDateTime,
-                   u.id                as userId,
+                   u.id                as creatorId,
                    u.nickname          as nickname,
                    u.profile_image     as profileImage,
                    jg.id               as jobGroupId,
@@ -128,12 +128,12 @@ class MainPageRepository(
                      INNER JOIN
                  folder f ON l.folder_id = f.id
                      INNER JOIN
-                 user u on l.user_id = u.id
+                 user u on l.creator_id = u.id
                      INNER JOIN
                  job_group jg on u.job_group_id = jg.id
                      LEFT OUTER JOIN
                  report ru ON (
-                        (l.user_id = ru.target_id OR l.id = ru.target_id)
+                        (l.creator_id = ru.target_id OR l.id = ru.target_id)
                         AND ru.reporter_id = :loggedInUserId
                  )
             WHERE
@@ -165,13 +165,13 @@ class MainPageRepository(
                      INNER JOIN
                  folder f ON l.folder_id = f.id
                      INNER JOIN
-                 user u on l.user_id = u.id
+                 user u on l.creator_id = u.id
                      INNER JOIN
                  job_group jg on u.job_group_id = jg.id
                      LEFT OUTER JOIN
                  report ru 
                     ON (
-                        (l.user_id = ru.target_id OR l.id = ru.target_id)
+                        (l.creator_id = ru.target_id OR l.id = ru.target_id)
                          and ru.reporter_id = :loggedInUserId
                     )
             WHERE
@@ -193,8 +193,8 @@ class MainPageRepository(
     private fun convert(row: MutableMap<String, Any>): LinkWithUserResult {
         return LinkWithUserResult(
             id = row["linkId"].toString().toLong(),
-            user = UserResult(
-                row["userId"].toString().toLong(),
+            creator = UserResult(
+                row["creatorId"].toString().toLong(),
                 row["nickname"]?.toString(),
                 JobGroupResponse(
                     row["jobGroupId"].toString().toLong(),

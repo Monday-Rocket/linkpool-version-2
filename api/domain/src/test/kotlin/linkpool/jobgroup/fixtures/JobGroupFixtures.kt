@@ -1,6 +1,6 @@
 package linkpool.jobgroup.fixtures
 
-import linkpool.jobgroup.model.JobGroup
+import linkpool.user2.jobgroup.model.JobGroup
 
 const val JOB_GROUP_NAME: String = "개발자"
 

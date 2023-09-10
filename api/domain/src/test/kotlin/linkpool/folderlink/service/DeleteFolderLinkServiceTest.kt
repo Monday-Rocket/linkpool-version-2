@@ -7,12 +7,13 @@ import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import linkpool.exception.NotAuthorizedForDataException
-import linkpool.folder.model.Folder
-import linkpool.folder.port.`in`.DeleteFolderUseCase
-import linkpool.folder.port.out.FolderPort
-import linkpool.link.event.LinkBatchEventPort
-import linkpool.user.model.User
-import linkpool.user.service.GetUserService
+import linkpool.link.folder.model.Folder
+import linkpool.link.folder.port.`in`.DeleteFolderUseCase
+import linkpool.link.folder.port.out.FolderPort
+import linkpool.link.folderlink.service.DeleteFolderLinkService
+import linkpool.link.link.event.LinkBatchEventPort
+import linkpool.user2.user.model.User
+import linkpool.user2.user.service.GetUserService
 
 class DeleteFolderLinkServiceTest : BehaviorSpec({
 
@@ -34,7 +35,7 @@ class DeleteFolderLinkServiceTest : BehaviorSpec({
 
   Given("폴더에 속한 링크 삭제") {
     every { userUseCase.getByUid(any()) } answers { User(id = 1L, uid = "") }
-    every { folderPort.getById(any()) } answers { Folder(userId = 1L, name = "hwjeon") }
+    every { folderPort.getById(any()) } answers { Folder(ownerId = 1L, name = "hwjeon") }
     justRun { deleteFolderUseCase.delete(any()) }
     justRun { linkBatchEvent.processDeleteBatch(any()) }
     When("폴더에 속한 링크삭제 함수를 호출할 경우") {
@@ -51,7 +52,7 @@ class DeleteFolderLinkServiceTest : BehaviorSpec({
     And("만약 내폴더가 아니라면") {
       clearAllMocks()
       every { userUseCase.getByUid(any()) } answers { User(id = 2L, uid = "") }
-      every { folderPort.getById(any()) } answers { Folder(userId = 1L, name = "hwjeon") }
+      every { folderPort.getById(any()) } answers { Folder(ownerId = 1L, name = "hwjeon") }
       When("폴더에 속한 링크삭제 함수를 호출할 경우") {
         val exception = shouldThrow<NotAuthorizedForDataException> {
           deleteFolderLinkService.delete("", 1L)

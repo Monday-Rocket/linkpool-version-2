@@ -10,11 +10,12 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import linkpool.exception.NotAuthorizedForDataException
-import linkpool.folder.model.Folder
-import linkpool.folder.port.`in`.UpdateFolderRequest
-import linkpool.folder.port.out.FolderPort
-import linkpool.user.model.User
-import linkpool.user.service.GetUserService
+import linkpool.link.folder.model.Folder
+import linkpool.link.folder.port.`in`.UpdateFolderRequest
+import linkpool.link.folder.port.out.FolderPort
+import linkpool.link.folder.service.UpdateFolderService
+import linkpool.user2.user.model.User
+import linkpool.user2.user.service.GetUserService
 
 class UpdateFolderServiceTest : BehaviorSpec({
 
@@ -29,8 +30,8 @@ class UpdateFolderServiceTest : BehaviorSpec({
 
   Given("폴더 정보 갱신") {
     every { userUseCase.getByUid(any()) } answers { User(id = 1L, uid = "") }
-    every { folderPort.getById(any()) } answers { Folder(userId = 1L, name = "hwjeon") }
-    every { folderPort.update(any(), any()) } answers { Folder(userId = 1L, name = "hwjeon") }
+    every { folderPort.getById(any()) } answers { Folder(ownerId = 1L, name = "hwjeon") }
+    every { folderPort.update(any(), any()) } answers { Folder(ownerId = 1L, name = "hwjeon") }
     When("폴더 정보 갱신을 요청할 경우") {
       updateFolderService.update("", 1L, UpdateFolderRequest())
       Then("폴더가 갱신된다.") {
@@ -44,7 +45,7 @@ class UpdateFolderServiceTest : BehaviorSpec({
     And("먼역 내폴더가 아니라면") {
       clearAllMocks()
       every { userUseCase.getByUid(any()) } answers { User(id = 2L, uid = "") }
-      every { folderPort.getById(any()) } answers { Folder(userId = 1L, name = "hwjeon") }
+      every { folderPort.getById(any()) } answers { Folder(ownerId = 1L, name = "hwjeon") }
       When("폴더 정보 갱신을 요청할 경우") {
         val exception = shouldThrow<NotAuthorizedForDataException> {
           updateFolderService.update("", 1L, UpdateFolderRequest())

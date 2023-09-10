@@ -15,16 +15,16 @@ import org.springframework.transaction.annotation.Transactional
 class SearchLinkQueryService(
     private val searchLinkRepository: SearchLinkRepository,
 ): SearchLinkQuery {
-    override suspend fun searchByKeyword(userId: Long, keyword: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult> {
+    override suspend fun searchByKeyword(loggedInUserId: Long, keyword: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult> {
         val processedKeyword = preprocessKeyword(keyword)
 
-        return searchLinkRepository.findPageByTitleContains(userId, processedKeyword, paging.toPageRequest()).toLinkPoolPage()
+        return searchLinkRepository.findPageByTitleContains(loggedInUserId, processedKeyword, paging.toPageRequest()).toLinkPoolPage()
     }
 
-    override suspend fun searchMyLinkByKeyword(userId: Long, keyword: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult> {
+    override suspend fun searchMyLinkByKeyword(creatorId: Long, keyword: String, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult> {
         val processedKeyword = preprocessKeyword(keyword)
 
-        return searchLinkRepository.findPageByUserIdAndTitleContains(userId, processedKeyword, paging.toPageRequest()).toLinkPoolPage()
+        return searchLinkRepository.findPageByCreatorIdAndTitleContains(creatorId, processedKeyword, paging.toPageRequest()).toLinkPoolPage()
     }
     private fun preprocessKeyword(keyword: String) = keyword.deleteSpace()
 

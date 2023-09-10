@@ -1,8 +1,8 @@
 package linkpool.user.fixtures
 
-import linkpool.user.model.User
-import linkpool.user.model.UserInformation
-import linkpool.user.port.`in`.UserInfoRequest
+import linkpool.user2.user.model.User
+import linkpool.user2.user.model.Profile
+import linkpool.user2.user.port.`in`.ProfileRequest
 import java.time.LocalDateTime
 
 const val USER_UID: String = "TestUid123456789"
@@ -22,7 +22,7 @@ fun createUser(
     return User(
         id,
         uid,
-        UserInformation(
+        Profile(
             nickname = nickname,
             jobGroupId = jobGroupId,
             profileImage = profileImage
@@ -53,8 +53,8 @@ fun createUserInformation(
     nickname: String = USER_NICKNAME,
     jobGroupId: Long = 1L,
     profileImage: String? = USER_PROFILE_IMAGE
-): UserInformation {
-    return UserInformation(
+): Profile {
+    return Profile(
         nickname = nickname,
         jobGroupId = jobGroupId,
         profileImage = profileImage
@@ -65,8 +65,8 @@ fun createUserInfoRequest(
     nickname: String? = USER_NICKNAME,
     jobGroupId: Long? = 1L,
     profileImage: String? = USER_PROFILE_IMAGE,
-): UserInfoRequest {
-    return UserInfoRequest(
+): ProfileRequest {
+    return ProfileRequest(
         nickname = nickname,
         jobGroupId = jobGroupId,
         profileImage = profileImage,

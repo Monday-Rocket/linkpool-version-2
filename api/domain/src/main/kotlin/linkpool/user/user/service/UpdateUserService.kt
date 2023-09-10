@@ -1,0 +1,27 @@
+package linkpool.user2.user.service
+
+import linkpool.common.DomainComponent
+import linkpool.exception.DuplicateNicknameException
+import linkpool.user2.user.port.`in`.GetUserUseCase
+import linkpool.user2.user.port.`in`.UpdateUserUseCase
+import linkpool.user2.user.port.`in`.ProfileRequest
+import linkpool.user2.user.port.out.UserPort
+import javax.transaction.Transactional
+
+@DomainComponent
+@Transactional
+class UpdateUserService(
+    private val userPort: UserPort,
+    private val getUserUseCase: GetUserUseCase
+) : UpdateUserUseCase {
+    override suspend fun updateProfile(userId: Long, profileRequest: ProfileRequest) {
+        val user = getUserUseCase.getById(userId)
+        profileRequest.nickname ?.let {
+            require(!userPort.existsByNickname(profileRequest.nickname)) {
+                throw DuplicateNicknameException()
+            }
+        }
+        user.updateProfile(profileRequest)
+        userPort.patch(user)
+    }
+}

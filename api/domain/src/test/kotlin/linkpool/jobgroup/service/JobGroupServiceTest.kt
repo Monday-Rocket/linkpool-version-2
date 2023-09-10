@@ -9,8 +9,9 @@ import io.mockk.every
 import io.mockk.mockk
 import linkpool.exception.DataNotFoundException
 import linkpool.jobgroup.fixtures.createJobGroup
-import linkpool.jobgroup.port.out.JobGroupPort
+import linkpool.user2.jobgroup.port.out.JobGroupPort
 import linkpool.support.spec.afterRootTest
+import linkpool.user2.jobgroup.service.JobGroupQueryService
 
 class JobGroupQueryServiceTest: BehaviorSpec({
     val jobGroupPort = mockk<JobGroupPort>()

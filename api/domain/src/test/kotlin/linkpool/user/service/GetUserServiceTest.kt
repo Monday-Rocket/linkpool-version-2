@@ -13,7 +13,8 @@ import linkpool.user.fixtures.USER_NICKNAME
 import linkpool.user.fixtures.USER_UID
 import linkpool.user.fixtures.createUser
 import linkpool.user.fixtures.createUserWithoutInfo
-import linkpool.user.port.out.UserPort
+import linkpool.user2.user.port.out.UserPort
+import linkpool.user2.user.service.GetUserService
 
 class GetUserServiceTest: BehaviorSpec({
     val userPort = mockk<UserPort>()
@@ -93,7 +94,7 @@ class GetUserServiceTest: BehaviorSpec({
     }
 
     Given("확인하고자 하는 닉네임이 존재하지 않는 경우") {
-        every { userPort.existsByInfoNickname(any()) } returns false
+        every { userPort.existsByNickname(any()) } returns false
 
         When("닉네임을 존재 여부를 확인하면") {
             val result = userQueryService.existsByNickname(USER_NICKNAME)
@@ -104,7 +105,7 @@ class GetUserServiceTest: BehaviorSpec({
     }
 
     Given("확인하고자 하는 닉네임이 존재하는 경우") {
-        every { userPort.existsByInfoNickname(any()) } returns true
+        every { userPort.existsByNickname(any()) } returns true
 
         When("닉네임을 존재 여부를 확인하면") {
             val result = userQueryService.existsByNickname(USER_NICKNAME)
