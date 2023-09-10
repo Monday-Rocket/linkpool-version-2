@@ -7,7 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import linkpool.report.fixtures.createReport
 import linkpool.report.fixtures.createReportTarget
-import linkpool.report.port.out.ReportPort
+import linkpool.report.report.port.out.ReportPort
 import linkpool.support.spec.afterRootTest
 
 class ReportQueryServiceTest : BehaviorSpec({

@@ -12,10 +12,10 @@ class UserFolderQueryService(
   private val userFolderRepository: UserFolderRepository
 ) : UserFolderQuery {
 
-  override suspend fun findFoldersByUserId(userId: Long): List<UserFolderListResult>
-      = userFolderRepository.findFoldersByUserId(userId)
+  override suspend fun findFoldersByOwnerId(ownerId: Long): List<UserFolderListResult>
+      = userFolderRepository.findFoldersByOwnerId(ownerId)
 
   override suspend fun findFoldersById(id: Long): List<UserFolderListResult>
-      = userFolderRepository.findFoldersByUserId(id)
+      = userFolderRepository.findFoldersByOwnerId(id)
 
 }

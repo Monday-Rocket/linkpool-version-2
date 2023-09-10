@@ -9,18 +9,18 @@ import java.time.ZonedDateTime
 class UserFolderRepository(
   private val databaseClient: DatabaseClient,
 ) {
-  suspend fun findFoldersByUserId(userId: Long): List<UserFolderListResult> {
+  suspend fun findFoldersByOwnerId(ownerId: Long): List<UserFolderListResult> {
     return databaseClient.sql(
       """
         SELECT f.*, count(l.folder_id) as link_count
         FROM folder AS f
         INNER JOIN link AS l ON f.id = l.folder_id
         WHERE f.visible IS true
-            AND f.user_id = :userId
+            AND f.owner_id = :ownerId
         GROUP BY f.id
       """
     )
-      .bind("userId", userId)
+      .bind("ownerId", ownerId)
       .fetch().all()
       .map { row -> convert(row) }
       .collectList()

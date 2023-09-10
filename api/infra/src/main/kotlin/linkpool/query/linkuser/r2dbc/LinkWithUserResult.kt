@@ -1,11 +1,11 @@
 package linkpool.query.linkuser.r2dbc
 
-import linkpool.jobgroup.port.`in`.JobGroupResponse
+import linkpool.user.jobgroup.port.`in`.JobGroupResponse
 import java.time.LocalDateTime
 
 data class LinkWithUserResult(
     val id: Long,
-    val user: UserResult,
+    val creator: UserResult,
     val url: String,
     val title: String? = null,
     val image: String? = null,

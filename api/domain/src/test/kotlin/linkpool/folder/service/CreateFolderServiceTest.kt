@@ -10,11 +10,12 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import linkpool.exception.DuplicateFolderNameException
-import linkpool.folder.model.Folder
-import linkpool.folder.port.`in`.SaveFolderRequest
-import linkpool.folder.port.out.FolderPort
-import linkpool.user.model.User
-import linkpool.user.service.GetUserService
+import linkpool.link.folder.model.Folder
+import linkpool.link.folder.port.`in`.SaveFolderRequest
+import linkpool.link.folder.port.out.FolderPort
+import linkpool.link.folder.service.CreateFolderService
+import linkpool.user.user.model.User
+import linkpool.user.user.service.GetUserService
 import java.time.LocalDateTime
 
 class CreateFolderServiceTest : BehaviorSpec({
@@ -30,20 +31,20 @@ class CreateFolderServiceTest : BehaviorSpec({
 
   Given("폴더 저장") {
     every { userUseCase.getByUid(any()) } answers { User(id = 1L, uid = "") }
-    every { folderPort.save(any()) } answers { Folder(userId = 1L, name = "hwjeon") }
-    every { folderPort.existsByUserIdAndName(any(), any()) } answers { false }
+    every { folderPort.save(any()) } answers { Folder(ownerId = 1L, name = "hwjeon") }
+    every { folderPort.existsByOwnerIdAndName(any(), any()) } answers { false }
     When("폴더 저장함수을 요청할 경우") {
       createFolderService.create("", createSaveFolderRequest())
       Then("폴더가 저장된다.") {
         verify { folderPort.save(any()) }
         verify { userUseCase.getByUid(any()) }
-        every { folderPort.existsByUserIdAndName(any(), any()) }
+        every { folderPort.existsByOwnerIdAndName(any(), any()) }
       }
     }
     And("이미 폴더가 존재할 경우") {
       clearAllMocks()
       every { userUseCase.getByUid(any()) } answers { User(id = 1L, uid = "") }
-      every { folderPort.existsByUserIdAndName(any(), any()) } answers { true }
+      every { folderPort.existsByOwnerIdAndName(any(), any()) } answers { true }
       When("폴더 저장을 요청할 경우") {
         val exception = shouldThrow<DuplicateFolderNameException> {
           createFolderService.create("", createSaveFolderRequest())
@@ -51,7 +52,7 @@ class CreateFolderServiceTest : BehaviorSpec({
         Then("예외를 던진다.") {
           exception.message shouldBe "이미 등록된 폴더명입니다."
           verify(exactly = 1) {
-            folderPort.existsByUserIdAndName(any(), any())
+            folderPort.existsByOwnerIdAndName(any(), any())
             userUseCase.getByUid(any())
           }
           verify(exactly = 0) {

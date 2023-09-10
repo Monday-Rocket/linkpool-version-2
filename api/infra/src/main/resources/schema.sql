@@ -6,7 +6,7 @@ CREATE TABLE `folder` (
   `deleted` bit(1) NOT NULL,
   `name` varchar(255) NOT NULL,
   `image` varchar(500) DEFAULT NULL,
-  `user_id` bigint DEFAULT NULL,
+  `owner_id` bigint DEFAULT NULL,
   `visible` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1135 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -32,7 +32,7 @@ CREATE TABLE `link` (
   `inflow_type` int NOT NULL DEFAULT '0',
   `title` varchar(30) DEFAULT NULL,
   `url` varchar(500) NOT NULL,
-  `user_id` bigint DEFAULT NULL,
+  `creator_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2211 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
