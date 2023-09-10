@@ -49,8 +49,7 @@ class LinkDataAdapter(
     }
 
     override suspend fun deleteBatchByUserId(userId: Long) {
-//        return linkRepository.deleteBatchByUserId(userId)
-        TODO()
+        return linkRepository.deleteBatchByUserId(userId)
     }
 
     override suspend fun deleteBatchByFolderId(folderId: Long) {

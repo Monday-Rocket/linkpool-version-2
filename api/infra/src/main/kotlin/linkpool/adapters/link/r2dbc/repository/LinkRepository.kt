@@ -1,6 +1,7 @@
 package linkpool.adapters.link.r2dbc.repository
 
 import linkpool.adapters.link.r2dbc.entity.LinkR2dbcEntity
+import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.data.repository.reactive.ReactiveSortingRepository
@@ -11,11 +12,13 @@ interface LinkRepository : ReactiveSortingRepository<LinkR2dbcEntity, Long> {
     @Query("SELECT count(*) FROM link WHERE user_id = :userId AND deleted = 0")
     suspend fun countByUserId(userId: Long): Long
 
-//    @Modifying
-//    @Query("UPDATE LinkJpaEntity l SET l.deleted = true WHERE l.userId = :userId")
-//    suspend fun deleteBatchByUserId(@Param("userId") userId: Long)
+    @Modifying
+    @Query("UPDATE link l SET l.deleted = true WHERE l.user_id = :userId")
+    suspend fun deleteBatchByUserId(@Param("userId") userId: Long)
 
-    @Query("UPDATE LinkJpaEntity l SET l.deleted = true WHERE l.folderId = :folderId")
+    @Modifying
+    @Query("UPDATE link l SET l.deleted = true WHERE l.folder_id = :folderId")
     suspend fun deleteBatchByFolderId(@Param("folderId") folderId: Long)
+
 
 }
