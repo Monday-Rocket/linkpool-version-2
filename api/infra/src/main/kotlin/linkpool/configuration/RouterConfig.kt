@@ -1,7 +1,9 @@
 package linkpool.configuration
 
 import linkpool.adapters.folder.`in`.rest.FolderHandler
+import linkpool.adapters.jobgroup.`in`.rest.JobGroupHandler
 import linkpool.adapters.link.`in`.rest.LinkHandler
+import linkpool.adapters.report.`in`.rest.ReportHandler
 import linkpool.adapters.user.`in`.rest.UserHandler
 import linkpool.common.rest.DefaultHandler
 import org.springframework.context.annotation.Bean
@@ -16,7 +18,9 @@ class RouterConfig(
     private val userHandler: UserHandler,
     private val linkHandler: LinkHandler,
     private val folderHandler: FolderHandler,
-    private val defaultHandler: DefaultHandler
+    private val jobGroupHandler: JobGroupHandler,
+    private val reportHandler: ReportHandler,
+    private val defaultHandler: DefaultHandler,
 ) {
 
     @Bean
@@ -47,6 +51,14 @@ class RouterConfig(
                     DELETE("/{folderId}", folderHandler::delete)
                     GET("", folderHandler::getByUserId)
                     GET("/{folderId}/links", linkHandler::getLinksOfFolder)
+                }
+                "/job-groups".nest {
+                    GET("", jobGroupHandler::getJobGroups)
+                    GET("/{jobGroupId}/links", jobGroupHandler::getLinkByJobGroups)
+                    GET("/links", jobGroupHandler::getLinks)
+                }
+                "/reports".nest {
+                    POST("", reportHandler::report)
                 }
                 GET ("", defaultHandler::getDefault)
             }
