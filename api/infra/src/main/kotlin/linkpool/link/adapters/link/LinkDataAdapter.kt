@@ -49,13 +49,11 @@ class LinkDataAdapter(
     }
 
     override suspend fun deleteBatchByCreatorId(creatorId: Long) {
-//        return linkRepository.deleteBatchByCreatorId(creatorId)
-        TODO()
+        return linkRepository.deleteBatchByCreatorId(creatorId)
     }
 
     override suspend fun deleteBatchByFolderId(folderId: Long) {
-//        return linkRepository.deleteBatchByFolderId(folderId)
-        TODO()
+        return linkRepository.deleteBatchByFolderId(folderId)
     }
 
     private fun toModel(pages: Page<LinkR2dbcEntity>): LinkPoolPage<Link> =
