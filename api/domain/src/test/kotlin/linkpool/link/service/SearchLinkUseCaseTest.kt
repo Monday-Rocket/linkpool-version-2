@@ -7,14 +7,14 @@ import io.mockk.every
 import io.mockk.mockk
 import linkpool.LinkPoolPage
 import linkpool.LinkPoolPageRequest
-import linkpool.user2.jobgroup.model.JobGroup
-import linkpool.user2.jobgroup.port.`in`.JobGroupQuery
+import linkpool.user.jobgroup.model.JobGroup
+import linkpool.user.jobgroup.port.`in`.JobGroupQuery
 import linkpool.link.link.model.InflowType
 import linkpool.link.link.model.Link
 import linkpool.link.link.port.out.LinkPort
-import linkpool.user2.user.model.User
-import linkpool.user2.user.model.Profile
-import linkpool.user2.user.port.`in`.GetUserUseCase
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class SearchLinkUseCaseTest: BehaviorSpec({
   val linkPort = mockk<LinkPort>()

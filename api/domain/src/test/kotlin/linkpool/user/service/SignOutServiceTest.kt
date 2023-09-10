@@ -5,8 +5,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.*
 import linkpool.support.spec.afterRootTest
 import linkpool.user.fixtures.createUser
-import linkpool.user2.user.port.out.UserPort
-import linkpool.user2.user.service.SignOutService
+import linkpool.user.user.port.out.UserPort
+import linkpool.user.user.service.SignOutService
 
 class SignOutServiceTest: BehaviorSpec({
     val userPort = mockk<UserPort>()

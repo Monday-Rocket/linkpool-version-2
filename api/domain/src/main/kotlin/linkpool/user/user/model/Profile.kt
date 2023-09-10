@@ -1,4 +1,4 @@
-package linkpool.user2.user.model
+package linkpool.user.user.model
 
 
 data class Profile(

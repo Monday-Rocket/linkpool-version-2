@@ -1,7 +1,7 @@
 package linkpool.query.linkuser.r2dbc
 
 import kotlinx.coroutines.reactor.awaitSingle
-import linkpool.user2.jobgroup.port.`in`.JobGroupResponse
+import linkpool.user.jobgroup.port.`in`.JobGroupResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable

@@ -10,9 +10,9 @@ import linkpool.link.link.model.Link
 import linkpool.link.link.port.out.LinkPort
 import linkpool.link.port.out.getById
 import linkpool.link.link.service.DeleteLinkService
-import linkpool.user2.user.model.User
-import linkpool.user2.user.model.Profile
-import linkpool.user2.user.port.`in`.GetUserUseCase
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class DeleteLinkUseCaseTest: BehaviorSpec({
 

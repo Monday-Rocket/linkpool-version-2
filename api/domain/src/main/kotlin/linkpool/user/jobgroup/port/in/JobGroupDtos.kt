@@ -1,6 +1,6 @@
-package linkpool.user2.jobgroup.port.`in`
+package linkpool.user.jobgroup.port.`in`
 
-import linkpool.user2.jobgroup.model.JobGroup
+import linkpool.user.jobgroup.model.JobGroup
 
 data class JobGroupResponse(
     val id: Long,

@@ -1,11 +1,11 @@
-package linkpool.user2.user.service
+package linkpool.user.user.service
 
 import linkpool.common.DomainComponent
 import linkpool.exception.DuplicateNicknameException
-import linkpool.user2.user.port.`in`.GetUserUseCase
-import linkpool.user2.user.port.`in`.UpdateUserUseCase
-import linkpool.user2.user.port.`in`.ProfileRequest
-import linkpool.user2.user.port.out.UserPort
+import linkpool.user.user.port.`in`.GetUserUseCase
+import linkpool.user.user.port.`in`.UpdateUserUseCase
+import linkpool.user.user.port.`in`.ProfileRequest
+import linkpool.user.user.port.out.UserPort
 import javax.transaction.Transactional
 
 @DomainComponent

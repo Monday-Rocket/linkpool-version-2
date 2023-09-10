@@ -12,8 +12,8 @@ import linkpool.link.folder.port.`in`.DeleteFolderUseCase
 import linkpool.link.folder.port.out.FolderPort
 import linkpool.link.folderlink.service.DeleteFolderLinkService
 import linkpool.link.link.event.LinkBatchEventPort
-import linkpool.user2.user.model.User
-import linkpool.user2.user.service.GetUserService
+import linkpool.user.user.model.User
+import linkpool.user.user.service.GetUserService
 
 class DeleteFolderLinkServiceTest : BehaviorSpec({
 

@@ -3,8 +3,8 @@ package linkpool.user.adapters.jobgroup.`in`.rest
 import linkpool.LinkPoolPage
 import linkpool.LinkPoolPageRequest
 import linkpool.common.rest.ApiResponse
-import linkpool.user2.jobgroup.port.`in`.JobGroupQuery
-import linkpool.user2.jobgroup.port.`in`.JobGroupResponse
+import linkpool.user.jobgroup.port.`in`.JobGroupQuery
+import linkpool.user.jobgroup.port.`in`.JobGroupResponse
 import linkpool.query.linkuser.MainPageQuery
 import linkpool.query.linkuser.r2dbc.LinkWithUserResult
 import linkpool.security.getPrincipal

@@ -2,7 +2,6 @@ package linkpool.report.report.service
 
 import linkpool.common.DomainComponent
 import linkpool.exception.DuplicateReportException
-import linkpool.report.model.*
 import linkpool.report.report.port.`in`.CreateReportUseCase
 import linkpool.report.report.port.`in`.CreateReportRequest
 import linkpool.report.report.port.out.ReportPort

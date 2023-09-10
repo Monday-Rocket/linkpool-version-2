@@ -1,10 +1,10 @@
-package linkpool.user2.jobgroup.service
+package linkpool.user.jobgroup.service
 
 import linkpool.common.DomainComponent
 import linkpool.exception.DataNotFoundException
-import linkpool.user2.jobgroup.model.JobGroup
-import linkpool.user2.jobgroup.port.`in`.JobGroupQuery
-import linkpool.user2.jobgroup.port.out.JobGroupPort
+import linkpool.user.jobgroup.model.JobGroup
+import linkpool.user.jobgroup.port.`in`.JobGroupQuery
+import linkpool.user.jobgroup.port.out.JobGroupPort
 import javax.transaction.Transactional
 
 @DomainComponent

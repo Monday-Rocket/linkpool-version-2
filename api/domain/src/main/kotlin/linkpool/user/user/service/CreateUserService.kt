@@ -1,11 +1,11 @@
-package linkpool.user2.user.service
+package linkpool.user.user.service
 
 import linkpool.common.DomainComponent
-import linkpool.user2.user.model.User
-import linkpool.user2.user.port.`in`.CreateUserResponse
-import linkpool.user2.user.port.`in`.CreateUserUseCase
-import linkpool.user2.user.port.out.UserAuthPort
-import linkpool.user2.user.port.out.UserPort
+import linkpool.user.user.model.User
+import linkpool.user.user.port.`in`.CreateUserResponse
+import linkpool.user.user.port.`in`.CreateUserUseCase
+import linkpool.user.user.port.out.UserAuthPort
+import linkpool.user.user.port.out.UserPort
 import javax.transaction.Transactional
 
 @DomainComponent

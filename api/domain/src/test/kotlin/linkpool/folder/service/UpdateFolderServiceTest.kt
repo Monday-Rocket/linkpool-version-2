@@ -14,8 +14,8 @@ import linkpool.link.folder.model.Folder
 import linkpool.link.folder.port.`in`.UpdateFolderRequest
 import linkpool.link.folder.port.out.FolderPort
 import linkpool.link.folder.service.UpdateFolderService
-import linkpool.user2.user.model.User
-import linkpool.user2.user.service.GetUserService
+import linkpool.user.user.model.User
+import linkpool.user.user.service.GetUserService
 
 class UpdateFolderServiceTest : BehaviorSpec({
 

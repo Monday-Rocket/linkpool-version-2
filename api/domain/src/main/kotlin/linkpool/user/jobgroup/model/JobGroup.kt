@@ -1,4 +1,4 @@
-package linkpool.user2.jobgroup.model
+package linkpool.user.jobgroup.model
 
 
 class JobGroup(

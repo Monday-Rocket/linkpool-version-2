@@ -1,8 +1,8 @@
-package linkpool.user2.user.model
+package linkpool.user.user.model
 
 import linkpool.exception.NotEnoughForSigningUpException
 import linkpool.exception.NotSignedUpException
-import linkpool.user2.user.port.`in`.ProfileRequest
+import linkpool.user.user.port.`in`.ProfileRequest
 import java.time.LocalDateTime
 
 class User(

@@ -1,4 +1,4 @@
-package linkpool.user2.user.model
+package linkpool.user.user.model
 
 class UserSignedOutEvent(
     val userId: Long

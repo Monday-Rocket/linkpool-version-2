@@ -1,6 +1,6 @@
-package linkpool.user2.user.port.out
+package linkpool.user.user.port.out
 
-import linkpool.user2.user.model.User
+import linkpool.user.user.model.User
 
 interface UserPort {
     suspend fun save(user: User): User

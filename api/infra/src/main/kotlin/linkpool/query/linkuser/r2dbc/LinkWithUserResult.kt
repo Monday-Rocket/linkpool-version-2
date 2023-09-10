@@ -1,6 +1,6 @@
 package linkpool.query.linkuser.r2dbc
 
-import linkpool.user2.jobgroup.port.`in`.JobGroupResponse
+import linkpool.user.jobgroup.port.`in`.JobGroupResponse
 import java.time.LocalDateTime
 
 data class LinkWithUserResult(

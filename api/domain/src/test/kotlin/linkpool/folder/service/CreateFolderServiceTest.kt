@@ -14,8 +14,8 @@ import linkpool.link.folder.model.Folder
 import linkpool.link.folder.port.`in`.SaveFolderRequest
 import linkpool.link.folder.port.out.FolderPort
 import linkpool.link.folder.service.CreateFolderService
-import linkpool.user2.user.model.User
-import linkpool.user2.user.service.GetUserService
+import linkpool.user.user.model.User
+import linkpool.user.user.service.GetUserService
 import java.time.LocalDateTime
 
 class CreateFolderServiceTest : BehaviorSpec({

@@ -3,9 +3,9 @@ package linkpool.user.adapters.user.r2dbc
 import kotlinx.coroutines.reactor.awaitSingle
 import linkpool.user.adapters.user.r2dbc.entity.UserR2dbcEntity
 import linkpool.user.adapters.user.r2dbc.repository.UserRepository
-import linkpool.user2.user.model.User
-import linkpool.user2.user.model.Profile
-import linkpool.user2.user.port.out.UserPort
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.out.UserPort
 import org.springframework.stereotype.Service
 
 

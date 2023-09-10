@@ -3,8 +3,8 @@ package linkpool.user.adapters.jobgroup.r2dbc
 import kotlinx.coroutines.reactive.awaitSingle
 import linkpool.user.adapters.jobgroup.r2dbc.entity.JobGroupR2dbcEntity
 import linkpool.user.adapters.jobgroup.r2dbc.repository.JobGroupRepository
-import linkpool.user2.jobgroup.model.JobGroup
-import linkpool.user2.jobgroup.port.out.JobGroupPort
+import linkpool.user.jobgroup.model.JobGroup
+import linkpool.user.jobgroup.port.out.JobGroupPort
 import org.springframework.stereotype.Service
 
 

@@ -1,6 +1,6 @@
-package linkpool.user2.jobgroup.port.out
+package linkpool.user.jobgroup.port.out
 
-import linkpool.user2.jobgroup.model.JobGroup
+import linkpool.user.jobgroup.model.JobGroup
 
 interface JobGroupPort {
     suspend fun findById(id: Long): JobGroup?

@@ -1,4 +1,4 @@
-package linkpool.user2.user.port.`in`
+package linkpool.user.user.port.`in`
 
 
 data class CreateUserResponse(

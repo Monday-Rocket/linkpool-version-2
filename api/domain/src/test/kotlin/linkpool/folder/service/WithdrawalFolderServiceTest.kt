@@ -8,7 +8,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import linkpool.link.folder.port.out.FolderPort
 import linkpool.link.folder.service.WithdrawalFolderService
-import linkpool.user2.user.model.UserSignedOutEvent
+import linkpool.user.user.model.UserSignedOutEvent
 
 class WithdrawalFolderServiceTest : BehaviorSpec({
 

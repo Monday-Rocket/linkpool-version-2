@@ -1,6 +1,6 @@
-package linkpool.user2.user.port.`in`
+package linkpool.user.user.port.`in`
 
-import linkpool.user2.user.model.User
+import linkpool.user.user.model.User
 
 interface GetUserUseCase {
     suspend fun getById(id: Long): User

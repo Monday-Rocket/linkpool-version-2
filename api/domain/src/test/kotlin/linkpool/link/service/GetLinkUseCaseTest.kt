@@ -11,8 +11,8 @@ import linkpool.link.link.model.InflowType
 import linkpool.link.link.model.Link
 import linkpool.link.link.port.out.LinkPort
 import linkpool.link.link.service.GetLinksService
-import linkpool.user2.user.model.User
-import linkpool.user2.user.port.`in`.GetUserUseCase
+import linkpool.user.user.model.User
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class GetLinkUseCaseTest: BehaviorSpec({
 	Given("GetLinkService") {

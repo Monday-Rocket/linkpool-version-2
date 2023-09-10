@@ -7,8 +7,8 @@ import linkpool.support.spec.afterRootTest
 import linkpool.user.fixtures.USER_UID
 import linkpool.user.fixtures.createUser
 import linkpool.user.fixtures.createUserWithoutInfo
-import linkpool.user2.user.port.out.UserPort
-import linkpool.user2.user.service.CreateUserService
+import linkpool.user.user.port.out.UserPort
+import linkpool.user.user.service.CreateUserService
 
 class CreateUserServiceTest: BehaviorSpec({
     val userPort = mockk<UserPort>()

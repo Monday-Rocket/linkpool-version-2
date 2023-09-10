@@ -9,8 +9,8 @@ import linkpool.exception.DuplicateNicknameException
 import linkpool.support.spec.afterRootTest
 import linkpool.user.fixtures.createUser
 import linkpool.user.fixtures.createUserInfoRequest
-import linkpool.user2.user.port.out.UserPort
-import linkpool.user2.user.service.UpdateUserService
+import linkpool.user.user.port.out.UserPort
+import linkpool.user.user.service.UpdateUserService
 
 class UpdateUserServiceTest: BehaviorSpec({
     val userPort = mockk<UserPort>()

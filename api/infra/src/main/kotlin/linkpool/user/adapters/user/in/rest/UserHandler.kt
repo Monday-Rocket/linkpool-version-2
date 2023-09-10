@@ -4,7 +4,7 @@ import linkpool.user.adapters.user.`in`.rest.dto.ApiUserProfileRequest
 import linkpool.common.rest.ApiResponse
 import linkpool.query.userjobgroup.UserJobGroupQuery
 import linkpool.security.getPrincipal
-import linkpool.user2.user.port.`in`.*
+import linkpool.user.user.port.`in`.*
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse

@@ -3,7 +3,7 @@ package linkpool.link.folder.service
 import linkpool.common.DomainComponent
 import linkpool.link.folder.port.`in`.WithdrawalFolderUseCase
 import linkpool.link.folder.port.out.FolderPort
-import linkpool.user2.user.model.UserSignedOutEvent
+import linkpool.user.user.model.UserSignedOutEvent
 import javax.transaction.Transactional
 
 @DomainComponent

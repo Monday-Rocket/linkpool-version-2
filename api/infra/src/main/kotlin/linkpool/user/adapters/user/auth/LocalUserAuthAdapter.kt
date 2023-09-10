@@ -1,6 +1,6 @@
 package linkpool.user.adapters.user.auth
 
-import linkpool.user2.user.port.out.UserAuthPort
+import linkpool.user.user.port.out.UserAuthPort
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 

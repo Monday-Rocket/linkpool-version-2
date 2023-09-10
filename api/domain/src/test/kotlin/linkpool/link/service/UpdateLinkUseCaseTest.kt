@@ -13,9 +13,9 @@ import linkpool.link.link.port.`in`.UpdateLinkRequest
 import linkpool.link.link.port.out.LinkPort
 import linkpool.link.port.out.getById
 import linkpool.link.link.service.UpdateLinkService
-import linkpool.user2.user.model.User
-import linkpool.user2.user.model.Profile
-import linkpool.user2.user.port.`in`.GetUserUseCase
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class UpdateLinkUseCaseTest: BehaviorSpec({
   val linkPort = mockk<LinkPort>()

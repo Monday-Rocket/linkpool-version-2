@@ -1,8 +1,8 @@
 package linkpool.user.fixtures
 
-import linkpool.user2.user.model.User
-import linkpool.user2.user.model.Profile
-import linkpool.user2.user.port.`in`.ProfileRequest
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.`in`.ProfileRequest
 import java.time.LocalDateTime
 
 const val USER_UID: String = "TestUid123456789"
