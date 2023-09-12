@@ -4,7 +4,7 @@ import linkpool.LinkPoolPageRequest
 import linkpool.common.rest.ApiResponse
 import linkpool.jobgroup.port.`in`.JobGroupQuery
 import linkpool.jobgroup.port.`in`.JobGroupResponse
-import linkpool.query.mainpage.MainPageQuery
+import linkpool.query.linkuser.MainPageQuery
 import linkpool.security.getPrincipal
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -27,7 +27,7 @@ class JobGroupHandler(
     val pageSize = request.queryParam("page_size").get().toInt()
     val principal = getPrincipal()
 
-    val links = mainPageQuery.getByUserId(jobGroupId, LinkPoolPageRequest(pageNo, pageSize), principal.id)
+    val links = mainPageQuery.getByJobGroupId(jobGroupId, LinkPoolPageRequest(pageNo, pageSize), principal.id)
     return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(links))
   }
 

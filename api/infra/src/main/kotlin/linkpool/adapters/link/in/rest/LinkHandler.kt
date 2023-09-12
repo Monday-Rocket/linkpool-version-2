@@ -4,7 +4,7 @@ import linkpool.LinkPoolPageRequest
 import linkpool.common.rest.ApiResponse
 import linkpool.link.port.`in`.*
 import linkpool.query.linkuser.LinkUserQuery
-import linkpool.query.searchlink.SearchLinkQuery
+import linkpool.query.linkuser.SearchLinkQuery
 import linkpool.security.getPrincipal
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -19,7 +19,7 @@ class LinkHandler(
     private val getLinksUseCase: GetLinksUseCase,
     private val searchLinkQuery: SearchLinkQuery,
     private val updateLinkUseCase: UpdateLinkUseCase,
-    private val linkUserQuery: LinkUserQuery
+    private val linkUserQuery: LinkUserQuery,
 ) {
     suspend fun create(request: ServerRequest): ServerResponse {
         val principal = getPrincipal()
@@ -56,7 +56,17 @@ class LinkHandler(
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(links))
     }
 
-    suspend fun getLinksOfFolder(request: ServerRequest): ServerResponse{
+    suspend fun getLinksOfFolder(request: ServerRequest): ServerResponse {
+        val principal = getPrincipal()
+        val pageNo = request.queryParam("page_no").get().toInt()
+        val pageSize = request.queryParam("page_size").get().toInt()
+        val folderId = request.pathVariable("folderId").toLong()
+
+        val links = linkUserQuery.getPageOfMyFolder(principal.id, folderId, LinkPoolPageRequest(pageNo, pageSize))
+        return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(links))
+    }
+
+    suspend fun getMyUnclassifiedLinks(request: ServerRequest): ServerResponse {
         val principal = getPrincipal()
         val pageNo = request.queryParam("page_no").get().toInt()
         val pageSize = request.queryParam("page_size").get().toInt()
@@ -64,10 +74,9 @@ class LinkHandler(
         val links = linkUserQuery.getUnclassifiedLinks(principal.id, LinkPoolPageRequest(pageNo, pageSize))
         return ServerResponse.ok().bodyValueAndAwait(ApiResponse.success(links))
     }
-
     suspend fun searchLinkByKeyword(request: ServerRequest): ServerResponse {
         val principal = getPrincipal()
-        val keyword = request.pathVariable("keyword")
+        val keyword = request.queryParam("keyword").get()
         val pageNo = request.queryParam("page_no").get().toInt()
         val pageSize = request.queryParam("page_size").get().toInt()
 
@@ -77,7 +86,7 @@ class LinkHandler(
 
     suspend fun searchMyLinkByKeyword(request: ServerRequest): ServerResponse {
         val principal = getPrincipal()
-        val keyword = request.pathVariable("keyword")
+        val keyword = request.queryParam("keyword").get()
         val pageNo = request.queryParam("page_no").get().toInt()
         val pageSize = request.queryParam("page_size").get().toInt()
 
