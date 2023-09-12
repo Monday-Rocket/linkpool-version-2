@@ -1,5 +1,7 @@
 package linkpool.configuration
 
+import linkpool.user.adapters.jobgroup.`in`.rest.JobGroupHandler
+import linkpool.report.adapters.report.`in`.rest.ReportHandler
 import linkpool.link.adapters.folder.`in`.rest.FolderHandler
 import linkpool.link.adapters.link.`in`.rest.LinkHandler
 import linkpool.user.adapters.user.`in`.rest.UserHandler
@@ -16,7 +18,9 @@ class RouterConfig(
     private val userHandler: UserHandler,
     private val linkHandler: LinkHandler,
     private val folderHandler: FolderHandler,
-    private val defaultHandler: DefaultHandler
+    private val jobGroupHandler: JobGroupHandler,
+    private val reportHandler: ReportHandler,
+    private val defaultHandler: DefaultHandler,
 ) {
 
     @Bean
@@ -47,6 +51,14 @@ class RouterConfig(
                     DELETE("/{folderId}", folderHandler::delete)
                     GET("", folderHandler::getByOwnerId)
                     GET("/{folderId}/links", linkHandler::getLinksOfFolder)
+                }
+                "/job-groups".nest {
+                    GET("", jobGroupHandler::getJobGroups)
+                    GET("/{jobGroupId}/links", jobGroupHandler::getLinkByJobGroups)
+                    GET("/links", jobGroupHandler::getLinks)
+                }
+                "/reports".nest {
+                    POST("", reportHandler::report)
                 }
                 GET ("", defaultHandler::getDefault)
             }
