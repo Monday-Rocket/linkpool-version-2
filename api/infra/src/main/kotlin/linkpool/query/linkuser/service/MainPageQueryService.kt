@@ -8,7 +8,7 @@ import linkpool.common.persistence.toPageRequest
 import linkpool.query.linkuser.MainPageQuery
 import linkpool.query.linkuser.r2dbc.LinkWithUserResult
 import linkpool.query.linkuser.r2dbc.MainPageRepository
-import linkpool.user.port.`in`.GetUserUseCase
+import linkpool.user.user.port.`in`.GetUserUseCase
 import org.springframework.data.domain.Page
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono

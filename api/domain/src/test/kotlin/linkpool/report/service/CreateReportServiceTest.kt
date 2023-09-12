@@ -7,7 +7,8 @@ import io.mockk.*
 import linkpool.exception.DuplicateReportException
 import linkpool.report.fixtures.createCreateReportRequest
 import linkpool.report.fixtures.createReport
-import linkpool.report.port.out.ReportPort
+import linkpool.report.report.port.out.ReportPort
+import linkpool.report.report.service.CreateReportService
 import linkpool.support.spec.afterRootTest
 import linkpool.user.fixtures.createUser
 

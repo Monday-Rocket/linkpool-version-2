@@ -5,6 +5,6 @@ import linkpool.LinkPoolPageRequest
 import linkpool.query.linkuser.r2dbc.LinkWithUserResult
 
 interface LinkUserQuery {
-    suspend fun getPageOfMyFolder(userId: Long, folderId: Long, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult>
-    suspend fun getUnclassifiedLinks(id: Long, linkPoolPageRequest: LinkPoolPageRequest): Any
+    suspend fun getPageOfMyFolder(ownerId: Long, folderId: Long, paging: LinkPoolPageRequest): LinkPoolPage<LinkWithUserResult>
+    suspend fun getUnclassifiedLinks(ownerId: Long, linkPoolPageRequest: LinkPoolPageRequest): Any
 }

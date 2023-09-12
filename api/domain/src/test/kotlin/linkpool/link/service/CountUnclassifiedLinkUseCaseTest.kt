@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import linkpool.link.port.out.LinkPort
+import linkpool.link.link.port.out.LinkPort
 class CountUnclassifiedLinkUseCaseTest: BehaviorSpec({
 	
 	Given("CountUnclassifiedLinkService") {

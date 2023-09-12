@@ -7,14 +7,15 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import linkpool.exception.NotAuthorizedForDataException
-import linkpool.link.model.InflowType
-import linkpool.link.model.Link
-import linkpool.link.port.`in`.UpdateLinkRequest
-import linkpool.link.port.out.LinkPort
+import linkpool.link.link.model.InflowType
+import linkpool.link.link.model.Link
+import linkpool.link.link.port.`in`.UpdateLinkRequest
+import linkpool.link.link.port.out.LinkPort
 import linkpool.link.port.out.getById
-import linkpool.user.model.User
-import linkpool.user.model.UserInformation
-import linkpool.user.port.`in`.GetUserUseCase
+import linkpool.link.link.service.UpdateLinkService
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class UpdateLinkUseCaseTest: BehaviorSpec({
   val linkPort = mockk<LinkPort>()
@@ -40,14 +41,14 @@ class UpdateLinkUseCaseTest: BehaviorSpec({
       val user = User(
         id = 1L,
         uid = "사용자 ID",
-        info = UserInformation(
+        profile = Profile(
           nickname = "대훈",
           jobGroupId = 2L
         )
       )
       val link = Link(
         id = linkId,
-        userId = 2,
+        creatorId = 2,
         title = "기존 제목",
         describe = "기존 설명",
         url = "기존 URL",
@@ -72,14 +73,14 @@ class UpdateLinkUseCaseTest: BehaviorSpec({
       val user = User(
         id = 2L,
         uid = "사용자 ID",
-        info = UserInformation(
+        profile = Profile(
           nickname = "대훈",
           jobGroupId = 2L
         )
       )
       val link = Link(
         id = linkId,
-        userId = 1,
+        creatorId = 1,
         title = "기존 제목",
         describe = "기존 설명",
         url = "기존 URL",

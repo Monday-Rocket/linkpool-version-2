@@ -5,7 +5,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.*
 import linkpool.support.spec.afterRootTest
 import linkpool.user.fixtures.createUser
-import linkpool.user.port.out.UserPort
+import linkpool.user.user.port.out.UserPort
+import linkpool.user.user.service.SignOutService
 
 class SignOutServiceTest: BehaviorSpec({
     val userPort = mockk<UserPort>()
@@ -17,7 +18,7 @@ class SignOutServiceTest: BehaviorSpec({
         When("회원 탈퇴를 하면") {
             signOutService.signOut(user)
             Then("회원 정보가 폐기되고 비활성화된다") {
-                user.info shouldBe null
+                user.profile shouldBe null
                 verify { userPort.patch(user) }
             }
         }

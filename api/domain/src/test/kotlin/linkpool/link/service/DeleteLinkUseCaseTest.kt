@@ -5,13 +5,14 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
 import linkpool.exception.NotAuthorizedForDataException
-import linkpool.link.model.InflowType
-import linkpool.link.model.Link
-import linkpool.link.port.out.LinkPort
+import linkpool.link.link.model.InflowType
+import linkpool.link.link.model.Link
+import linkpool.link.link.port.out.LinkPort
 import linkpool.link.port.out.getById
-import linkpool.user.model.User
-import linkpool.user.model.UserInformation
-import linkpool.user.port.`in`.GetUserUseCase
+import linkpool.link.link.service.DeleteLinkService
+import linkpool.user.user.model.User
+import linkpool.user.user.model.Profile
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class DeleteLinkUseCaseTest: BehaviorSpec({
 
@@ -27,14 +28,14 @@ class DeleteLinkUseCaseTest: BehaviorSpec({
       val user = User(
         id = 1L,
         uid = "사용자 ID",
-        info = UserInformation(
+        profile = Profile(
           nickname = "대훈",
           jobGroupId = 2L
         )
       )
       val link = Link(
         id = 2L,
-        userId = 1,
+        creatorId = 1,
         title = "링크 제목",
         describe = "링크 설명",
         url = "링크 URL",
@@ -56,14 +57,14 @@ class DeleteLinkUseCaseTest: BehaviorSpec({
       val user = User(
         id = 1L,
         uid = "다른 사용자 ID",
-        info = UserInformation(
+        profile = Profile(
           nickname = "다른 사용자",
           jobGroupId = 2L
         )
       )
       val link = Link(
         id = linkId,
-        userId = 1,
+        creatorId = 1,
         title = "링크 제목",
         describe = "링크 설명",
         url = "링크 URL",
