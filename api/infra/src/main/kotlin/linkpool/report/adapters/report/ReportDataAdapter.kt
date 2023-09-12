@@ -1,7 +1,6 @@
 package linkpool.report.adapters.report
 
 import kotlinx.coroutines.reactor.awaitSingle
-import linkpool.adapters.report.r2dbc.entity.*
 import linkpool.report.adapters.report.r2dbc.repository.ReportRepository
 import linkpool.report.adapters.report.r2dbc.entity.ReportR2dbcEntity
 import linkpool.report.report.model.Report
