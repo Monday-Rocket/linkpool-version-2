@@ -3,5 +3,5 @@ package linkpool.user.port.out
 import linkpool.user.model.UserSignedOutEvent
 
 interface UserEventPublishPort {
-   suspend fun publishUserSignedOutEvent(userSignedOutEvent: UserSignedOutEvent)
+    fun publishUserSignedOutEvent(userSignedOutEvent: UserSignedOutEvent)
 }
