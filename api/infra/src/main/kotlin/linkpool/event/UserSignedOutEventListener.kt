@@ -8,7 +8,6 @@ import linkpool.user.model.UserSignedOutEvent
 import org.springframework.integration.annotation.ServiceActivator
 import org.springframework.messaging.Message
 import org.springframework.messaging.handler.annotation.Payload
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
 fun <T> CoroutineScope.safeAsync(block: suspend () -> T): Deferred<Result<T>> {
@@ -30,7 +29,9 @@ class UserSignedOutEventListener(
     @Async
     @ServiceActivator(inputChannel = "signedOutEvent")
     fun handleForSignedOutEventListener(@Payload message: Message<UserSignedOutEvent>) {
-        CoroutineScope(Job()).launch {
+        CoroutineScope(CoroutineExceptionHandler { _, exception ->
+            log.error("$exception in the handleForSignedOutEventListener")
+        }).launch {
             val folderEventDeferred = safeAsync {
                 folderEventListener.deleteBatchAll(message.payload)
             }
