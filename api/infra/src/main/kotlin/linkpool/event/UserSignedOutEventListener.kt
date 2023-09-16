@@ -30,7 +30,7 @@ class UserSignedOutEventListener(
     fun handleForSignedOutEventListener(@Payload message: Message<UserSignedOutEvent>) {
         CoroutineScope(CoroutineExceptionHandler { _, exception ->
             log.error("$exception in the handleForSignedOutEventListener")
-        }).launch {
+        } + Dispatchers.IO).launch {
             val folderEventDeferred = safeAsync {
                 folderEventListener.deleteBatchAll(message.payload)
             }
