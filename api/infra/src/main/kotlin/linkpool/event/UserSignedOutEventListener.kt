@@ -26,7 +26,6 @@ class UserSignedOutEventListener(
 
     private val log = kLogger()
 
-    @Async
     @ServiceActivator(inputChannel = "signedOutEvent")
     fun handleForSignedOutEventListener(@Payload message: Message<UserSignedOutEvent>) {
         CoroutineScope(CoroutineExceptionHandler { _, exception ->
