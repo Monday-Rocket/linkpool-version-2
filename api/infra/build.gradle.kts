@@ -37,7 +37,6 @@ dependencies {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     exclude(group = "org.mockito")
   }
-  testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 
   // Swagger
   implementation("io.springfox:springfox-boot-starter:3.0.0")
