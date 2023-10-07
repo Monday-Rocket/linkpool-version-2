@@ -28,9 +28,7 @@ class UserSignedOutEventListener(
 
     @ServiceActivator(inputChannel = "signedOutEvent")
     fun handleForSignedOutEventListener(@Payload message: Message<UserSignedOutEvent>) {
-        CoroutineScope(CoroutineExceptionHandler { _, exception ->
-            log.error("$exception in the handleForSignedOutEventListener")
-        } + Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val folderEventDeferred = safeAsync {
                 folderEventListener.deleteBatchAll(message.payload)
             }
