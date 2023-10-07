@@ -2,6 +2,7 @@ package linkpool.event
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Qualifier
 import linkpool.user.user.model.UserSignedOutEvent
 import linkpool.user.user.port.out.UserEventPublishPort
@@ -22,7 +23,7 @@ class UserSignedOutEventPublisher(
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     override fun publishUserSignedOutEvent(userSignedOutEvent: UserSignedOutEvent) {
-        CoroutineScope(Dispatchers.IO).run {
+        CoroutineScope(Dispatchers.IO).launch {
             val message = MessageBuilder.withPayload(userSignedOutEvent).build()
             outputChannel.send(message)
         }
