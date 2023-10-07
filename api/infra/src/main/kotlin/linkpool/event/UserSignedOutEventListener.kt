@@ -40,10 +40,11 @@ class UserSignedOutEventListener(
 
             folderEventDeferred.await()
                 .onSuccess { log.info("succeed in folderEventListener from UserSignedOut... userId: ${message.payload.userId}") }
-                .onFailure { e -> log.info("Error in folderEventListener from UserSignedOut... userId: ${message.payload.userId} \n error: ${e.message}") }
+                .onFailure { e -> log.error("Error in folderEventListener from UserSignedOut... userId: ${message.payload.userId} \n error: ${e.message}") }
             linkEventDeferred.await()
                 .onSuccess { log.info("succeed in linkEventListener from UserSignedOut... userId: ${message.payload.userId}") }
-                .onFailure { e -> log.info("Error in linkEventListener from UserSignedOut... userId: ${message.payload.userId} \n error: ${e.message}") }
+                .onFailure { e -> log.error("Error in linkEventListener from UserSignedOut... userId: ${message.payload.userId} \n error: ${e.message}") }
+
         }
     }
 }
