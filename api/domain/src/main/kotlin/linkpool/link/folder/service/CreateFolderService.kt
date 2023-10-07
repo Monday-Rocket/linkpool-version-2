@@ -7,7 +7,7 @@ import linkpool.link.folder.port.`in`.CreateFolderUseCase
 import linkpool.link.folder.port.`in`.SaveFolderRequest
 import linkpool.link.folder.port.out.FolderPort
 import java.time.LocalDateTime
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

@@ -7,7 +7,7 @@ import linkpool.link.folderlink.port.`in`.BulkCreateRequest
 import linkpool.link.folderlink.port.`in`.CreateFolderLinkBulkUseCase
 import linkpool.link.link.port.`in`.CreateLinkUseCase
 import linkpool.link.link.port.`in`.SaveLinkRequest
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

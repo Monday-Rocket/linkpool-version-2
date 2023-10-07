@@ -5,7 +5,7 @@ import linkpool.report.report.model.Report
 import linkpool.report.report.model.ReportTarget
 import linkpool.report.report.port.`in`.GetReportUseCase
 import linkpool.report.report.port.out.ReportPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

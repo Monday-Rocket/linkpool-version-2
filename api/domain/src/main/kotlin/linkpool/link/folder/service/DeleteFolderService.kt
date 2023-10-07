@@ -4,7 +4,7 @@ import linkpool.common.DomainComponent
 import linkpool.exception.NotAuthorizedForDataException
 import linkpool.link.folder.port.`in`.DeleteFolderUseCase
 import linkpool.link.folder.port.out.FolderPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

@@ -5,7 +5,7 @@ import linkpool.exception.NotAuthorizedForDataException
 import linkpool.link.folder.port.`in`.UpdateFolderRequest
 import linkpool.link.folder.port.`in`.UpdateFolderUseCase
 import linkpool.link.folder.port.out.FolderPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

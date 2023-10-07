@@ -5,7 +5,7 @@ import linkpool.exception.DataNotFoundException
 import linkpool.exception.NotAuthorizedForDataException
 import linkpool.link.link.port.`in`.DeleteLinkUseCase
 import linkpool.link.link.port.out.LinkPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional
