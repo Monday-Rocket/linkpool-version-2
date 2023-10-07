@@ -6,7 +6,8 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
-import linkpool.folder.port.out.FolderPort
+import linkpool.link.folder.port.out.FolderPort
+import linkpool.link.folder.service.DeleteFolderService
 
 class DeleteFolderServiceTest : BehaviorSpec({
 

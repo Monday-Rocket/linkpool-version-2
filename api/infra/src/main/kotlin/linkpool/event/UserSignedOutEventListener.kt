@@ -2,9 +2,9 @@ package linkpool.event
 
 import kotlinx.coroutines.*
 import linkpool.common.log.kLogger
-import linkpool.folder.port.`in`.FolderEventListener
-import linkpool.link.port.`in`.LinkEventListener
-import linkpool.user.model.UserSignedOutEvent
+import linkpool.link.folder.port.`in`.FolderEventListener
+import linkpool.link.link.port.`in`.LinkEventListener
+import linkpool.user.user.model.UserSignedOutEvent
 import org.springframework.integration.annotation.ServiceActivator
 import org.springframework.messaging.Message
 import org.springframework.messaging.handler.annotation.Payload

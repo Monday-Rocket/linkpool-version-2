@@ -7,11 +7,12 @@ import io.mockk.mockk
 import io.mockk.verify
 import linkpool.LinkPoolPage
 import linkpool.LinkPoolPageRequest
-import linkpool.link.model.InflowType
-import linkpool.link.model.Link
-import linkpool.link.port.out.LinkPort
-import linkpool.user.model.User
-import linkpool.user.port.`in`.GetUserUseCase
+import linkpool.link.link.model.InflowType
+import linkpool.link.link.model.Link
+import linkpool.link.link.port.out.LinkPort
+import linkpool.link.link.service.GetLinksService
+import linkpool.user.user.model.User
+import linkpool.user.user.port.`in`.GetUserUseCase
 
 class GetLinkUseCaseTest: BehaviorSpec({
 	Given("GetLinkService") {
@@ -24,8 +25,8 @@ class GetLinkUseCaseTest: BehaviorSpec({
 			val paging = LinkPoolPageRequest(1, 10, 2, 10)
 			val user = User(id = 1L, uid = uid)
 			val links = listOf(
-					Link(userId = 1L, url = "https://example.com", title = "Example", inflowType = InflowType.BRING),
-					Link(userId = 2L, url = "https://google.com", title = "Google", inflowType = InflowType.BRING)
+					Link(creatorId = 1L, url = "https://example.com", title = "Example", inflowType = InflowType.BRING),
+					Link(creatorId = 2L, url = "https://google.com", title = "Google", inflowType = InflowType.BRING)
 			)
 			
 			val expectedPage = LinkPoolPage(
@@ -37,12 +38,12 @@ class GetLinkUseCaseTest: BehaviorSpec({
 			)
 			
 			every { getUserUseCase.getByUid(uid) } returns user
-			every { linkPort.findPageByUserIdOrderByCreatedDateTimeDesc(user.id, paging) } returns expectedPage
+			every { linkPort.findPageByCreatorIdOrderByCreatedDateTimeDesc(user.id, paging) } returns expectedPage
 			
-			val result = getLinkService.getByUserId(uid, paging)
+			val result = getLinkService.getByCreatorId(uid, paging)
 			
 			Then("LinkPort의 findPageByUserIdOrderByCreatedDateTimeDesc 메서드가 호출되고, 예상된 결과를 반환한다") {
-				verify(exactly = 1) { linkPort.findPageByUserIdOrderByCreatedDateTimeDesc(user.id, paging) }
+				verify(exactly = 1) { linkPort.findPageByCreatorIdOrderByCreatedDateTimeDesc(user.id, paging) }
 				result.contents[0].id shouldBe expectedPage.contents[0].id
 			}
 		}
@@ -51,8 +52,8 @@ class GetLinkUseCaseTest: BehaviorSpec({
 			val folderId = 1L
 			val paging = LinkPoolPageRequest(1, 10, 2, 10)
 			val links = listOf(
-					Link(userId = 1L, url = "https://example.com", title = "Example", inflowType = InflowType.BRING),
-					Link(userId = 2L, url = "https://google.com", title = "Google", inflowType = InflowType.BRING)
+					Link(creatorId = 1L, url = "https://example.com", title = "Example", inflowType = InflowType.BRING),
+					Link(creatorId = 2L, url = "https://google.com", title = "Google", inflowType = InflowType.BRING)
 			)
 			val expectedPage = LinkPoolPage(
 					page_no = 1,
@@ -67,7 +68,7 @@ class GetLinkUseCaseTest: BehaviorSpec({
 			val result = getLinkService.getByFolderId(folderId, paging)
 			
 			Then("LinkPort의 findPageByFolderIdOrderByCreatedDateTimeDesc 메서드가 호출되고, 예상된 결과를 반환한다") {
-				verify(exactly = 1) { linkPort.findPageByUserIdOrderByCreatedDateTimeDesc(folderId, paging) }
+				verify(exactly = 1) { linkPort.findPageByCreatorIdOrderByCreatedDateTimeDesc(folderId, paging) }
 				result.contents[0].id shouldBe expectedPage.contents[0].id
 			}
 		}

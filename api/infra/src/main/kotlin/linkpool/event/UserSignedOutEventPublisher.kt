@@ -2,9 +2,9 @@ package linkpool.event
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import linkpool.user.model.UserSignedOutEvent
-import linkpool.user.port.out.UserEventPublishPort
 import org.springframework.beans.factory.annotation.Qualifier
+import linkpool.user.user.model.UserSignedOutEvent
+import linkpool.user.user.port.out.UserEventPublishPort
 import org.springframework.integration.config.EnablePublisher
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.support.MessageBuilder

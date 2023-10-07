@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional
 class UserJobGroupQueryService(
     private val userJobGroupRepository: UserJobGroupRepository
 ): UserJobGroupQuery {
-    override suspend fun getInformationById(userId: Long): UserWithJobGroupResult {
+    override suspend fun getProfileById(userId: Long): UserWithJobGroupResult {
         return userJobGroupRepository.findInformationById(userId) ?: throw DataNotFoundException("회원이 존재하지 않습니다. id: $userId")
     }
-    override suspend fun getInformationByIdOrNull(userId: Long): UserWithJobGroupResult? {
+    override suspend fun getProfileByIdOrNull(userId: Long): UserWithJobGroupResult? {
         return userJobGroupRepository.findInformationById(userId)
     }
 }
