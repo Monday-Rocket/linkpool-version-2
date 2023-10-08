@@ -9,7 +9,7 @@ import javax.transaction.Transactional
 
 @DomainComponent
 @Transactional
-class ReportQueryService(
+class GetReportService(
     private val reportPort: ReportPort,
 ): GetReportUseCase {
     override suspend fun getByReportIdAndTargetOrNull(reporterId: Long, target: ReportTarget): Report? {
