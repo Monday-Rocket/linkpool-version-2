@@ -6,7 +6,7 @@ import linkpool.user.user.port.`in`.CreateUserResponse
 import linkpool.user.user.port.`in`.CreateUserUseCase
 import linkpool.user.user.port.out.UserAuthPort
 import linkpool.user.user.port.out.UserPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

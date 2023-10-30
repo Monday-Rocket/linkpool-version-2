@@ -7,7 +7,7 @@ import linkpool.link.link.port.`in`.CreateLinkUseCase
 import linkpool.link.link.port.`in`.SaveLinkRequest
 import linkpool.link.link.port.out.LinkPort
 import java.time.LocalDateTime
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

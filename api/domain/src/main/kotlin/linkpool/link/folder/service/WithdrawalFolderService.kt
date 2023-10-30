@@ -4,7 +4,7 @@ import linkpool.common.DomainComponent
 import linkpool.link.folder.port.`in`.WithdrawalFolderUseCase
 import linkpool.link.folder.port.out.FolderPort
 import linkpool.user.user.model.UserSignedOutEvent
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

@@ -8,7 +8,7 @@ import linkpool.report.report.port.out.ReportPort
 import linkpool.report.report.model.Report
 import linkpool.report.report.model.ReportReason
 import linkpool.report.report.model.ReportTarget
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

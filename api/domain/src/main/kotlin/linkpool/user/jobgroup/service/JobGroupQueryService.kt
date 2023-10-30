@@ -5,7 +5,7 @@ import linkpool.exception.DataNotFoundException
 import linkpool.user.jobgroup.model.JobGroup
 import linkpool.user.jobgroup.port.`in`.JobGroupQuery
 import linkpool.user.jobgroup.port.out.JobGroupPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

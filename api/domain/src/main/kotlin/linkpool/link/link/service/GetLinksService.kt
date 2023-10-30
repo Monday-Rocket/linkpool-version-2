@@ -6,7 +6,7 @@ import linkpool.common.DomainComponent
 import linkpool.link.link.model.Link
 import linkpool.link.link.port.`in`.GetLinksUseCase
 import linkpool.link.link.port.out.LinkPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

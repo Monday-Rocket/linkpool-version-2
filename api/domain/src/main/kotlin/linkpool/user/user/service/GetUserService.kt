@@ -6,7 +6,7 @@ import linkpool.exception.NotSignedUpException
 import linkpool.user.user.model.User
 import linkpool.user.user.port.`in`.GetUserUseCase
 import linkpool.user.user.port.out.UserPort
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @DomainComponent
 @Transactional

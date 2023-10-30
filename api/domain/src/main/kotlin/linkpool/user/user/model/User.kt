@@ -14,9 +14,10 @@ class User(
     private var deleted: Boolean = false
 ) {
 
-    fun signOut() {
+    fun signOut(): UserSignedOutEvent {
         profile = null
         deleted = true
+        return UserSignedOutEvent(id)
     }
 
     fun activate() {

@@ -6,22 +6,27 @@ import linkpool.user.user.port.`in`.GetUserUseCase
 import linkpool.user.user.port.`in`.SignOutUseCase
 import linkpool.user.user.port.out.UserPort
 import linkpool.user.user.port.out.UserEventPublishPort
-import linkpool.user.user.model.UserSignedOutEvent
-
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.reactive.TransactionalOperator
+import org.springframework.transaction.reactive.executeAndAwait
 
 @DomainComponent
 @Transactional
 class SignOutService(
     private val getUserUseCase: GetUserUseCase,
     private val userPort: UserPort,
-    private val userEventPublishPort: UserEventPublishPort
+    private val userEventPublishPort: UserEventPublishPort,
+    private val transactionalOperator: TransactionalOperator
 ): SignOutUseCase {
 
     override suspend fun signOut(userId: Long) {
-        val user = getUserUseCase.getById(userId)
-        user.signOut()
-        userPort.patch(user)
-        userEventPublishPort.publishUserSignedOutEvent(UserSignedOutEvent(user.id))
+        transactionalOperator.executeAndAwait {
+            val user = getUserUseCase.getById(userId)
+            val event = user.signOut()
+            userPort.patch(user)
+            event
+        }?.let {
+            userEventPublishPort.publishUserSignedOutEvent(it)
+        }
     }
 }
